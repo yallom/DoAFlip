@@ -10,14 +10,16 @@ import ptPT from "antd/locale/pt_PT";
 const queryClient = new QueryClient();
 
 const App = lazy(() => import('@/App'))
-const LoadingPage = lazy(() => import('@/pages/LoadingPage'))
-const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
+const LoginPage = lazy(() => import('@/pages/LoginPage'))
+const ChatPage = lazy(() => import('@/pages/ChatPage'))
 
 const NavBar = lazy(() => import('@/components/NavBar'))
-const HomePage = lazy(() => import('@/pages/HomePage'))
-const ExchangesPage = lazy(() => import('@/pages/ExchangesPage'))
-const CoinsPage = lazy(() => import('@/pages/CoinsPage'))
+const PlanPage = lazy(() => import('@/pages/PlanPage'))
+const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
+const RegisterPage = lazy(() => import('@/pages/RegisterPage'))
 const SettingsPage = lazy(() => import('@/pages/SettingsPage'))
+const LoadingPage = lazy(() => import('@/pages/LoadingPage'))
+const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
   
 
 export const router = createBrowserRouter([
@@ -28,26 +30,30 @@ export const router = createBrowserRouter([
       children: [
         {
             path: '/',
-            element: <Navigate to="/homepage" replace />
+            element: <Navigate to="/chatpage" replace />
         },                
         {
           element: <NavBar/>,
           children: [
             {
-              path: 'homepage',
-              element: <HomePage/>,
+              path: 'chat',
+              element: <ChatPage/>,
             },
             {
-              path: 'exchanges',
-              element: <ExchangesPage/>,
+              path: 'profile',
+              element: <ProfilePage/>,
             },
             {
-              path: 'coins',
-              element: <CoinsPage/>,
+              path: 'plan',
+              element: <PlanPage/>,
             },
             {
               path: 'settings',
               element: <SettingsPage/>,
+            },
+            {
+              path: 'login',
+              element: <LoginPage/>,
             },
           ],
         },

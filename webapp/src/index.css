@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-darkgreen: #2A4230;
+  --color-darkgreen: #102216;
   --color-green: #3C653C;
   --color-lightgreen: #43B12E;
   --color-black: #000000;
