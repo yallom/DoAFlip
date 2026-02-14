@@ -9,5 +9,148 @@ generator client {
 }
 
 datasource db {
-    provider = "postgresql"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum Genero {
+  Masculino
+  Feminino
+}
+
+enum Objetivo {
+  perda_peso
+  aumento_muscular
+  manutencao
+}
+
+enum TipoRefeicao {
+  pequeno_almoco
+  almoco
+  jantar
+  lanche
+}
+
+enum CategoriaAlimento {
+  proteina
+  carboidrato
+  vegetal
+  fruta
+  gordura
+  lacteo
+}
+
+// Models
+model Utilizador {
+  id                    String              @id @default(uuid())
+  email                 String              @unique
+  hashPassword          String
+  nome                  String
+  data_nascimento       DateTime
+  altura_cm             Int
+  peso_kg               Float
+  genero                Genero
+  objetivo              Objetivo
+  created_at            DateTime            @default(now())
+  updated_at            DateTime            @updatedAt
+
+  // Relacionamentos
+  planoAlimentar        PlanoAlimentar[]
+
+  @@map("utilizadores")
+}
+
+model Refeicao {
+  id                    String              @id @default(uuid())
+  planoAlimentar_id     String
+  tipo                  TipoRefeicao
+  data                  DateTime
+  data_criacao          DateTime            @default(now())
+  calorias_totais       Float               @default(0)
+
+  // Relacionamentos
+  planoAlimentar        PlanoAlimentar      @relation(fields: [planoAlimentar_id], references: [id], onDelete: Cascade)
+  receitas              Receita[]
+
+  @@map("refeicoes")
+}
+
+model PlanoAlimentar {
+  id                    String              @id @default(uuid())
+  utilizador_id         String
+  nome                  String
+  data_inicio           DateTime
+  data_fim              DateTime?
+  meta_calorias         Int
+  observacoes           String?
+
+  // Relacionamentos
+  utilizador            Utilizador          @relation(fields: [utilizador_id], references: [id], onDelete: Cascade)
+  refeicoes             Refeicao[]
+
+  @@map("planos_alimentares")
+}
+
+model Alimento {
+  id                       String                   @id @default(uuid())
+  nome                     String
+  nome_normalizado         String
+  categoria                CategoriaAlimento
+
+  // Relacionamentos
+  ingrediente_receitas     IngredienteReceita[]
+  substituicoes_origem     SubstituicaoAlimento[]   @relation("AlimentoOrigem")
+  substituicoes_substituto SubstituicaoAlimento[]   @relation("AlimentoSubstituto")
+
+  @@map("alimentos")
+}
+
+model IngredienteReceita {
+  id                       String                   @id @default(uuid())  
+  receita_id               String
+  alimento_id              String
+  quantidade_g             Float
+
+  // Relacionamentos
+  receita                  Receita                  @relation(fields: [receita_id], references: [id], onDelete: Cascade)
+  alimento                 Alimento                 @relation(fields: [alimento_id], references: [id], onDelete: Cascade)
+  substituicoes            SubstituicaoAlimento[]
+
+  @@unique([receita_id, alimento_id])
+  @@map("ingredientes_receita")
+}
+
+model SubstituicaoAlimento {
+  id                     String              @id @default(uuid())
+  ingrediente_receita_id String
+  alimento_origem_id     String
+  alimento_substituto_id String
+  quantidade_g           Float
+  similaridade_score     Float
+  justificacao           String?
+  motivo                 String?
+
+  // Relacionamentos
+  ingrediente_receita    IngredienteReceita  @relation(fields: [ingrediente_receita_id], references: [id], onDelete: Cascade)
+  alimento_origem        Alimento            @relation("AlimentoOrigem", fields: [alimento_origem_id], references: [id], onDelete: Cascade)
+  alimento_substituto    Alimento            @relation("AlimentoSubstituto", fields: [alimento_substituto_id], references: [id], onDelete: Cascade)
+
+  @@map("substituicoes_alimento")
+}
+
+model Receita {
+  id                    String                @id @default(uuid())
+  nome                  String
+  descricao             String?
+  porcoes               Int
+  tempo_preparo         Int
+  calorias_totais       Int
+  refeicao_id           String
+
+  // Relacionamentos
+  ingredientes          IngredienteReceita[]
+  refeicao              Refeicao              @relation(fields: [refeicao_id], references: [id], onDelete: Cascade)
+
+  @@map("receitas")
 }

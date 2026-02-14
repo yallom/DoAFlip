@@ -1,14 +1,24 @@
-import express, { type Request, type Response } from "express";
+import express from 'express';
+import authRoutes from './routes/auth';
+import userRoutes from './routes/users';
+import { PrismaClient } from '@prisma/client';
+
+export const prisma = new PrismaClient();
 
 const app = express();
-const PORT = 3000;
 
-app.use(express.json());
+app.use(express.json());     // Parser JSON
+app.use(express.urlencoded({ extended: true })); // Parser URL
 
-app.get("/", (_: Request, res: Response) => {
-  res.json({ message: "Hello from Bun + Express + TypeScript!" });
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
 });
 
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running at http://localhost:${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
