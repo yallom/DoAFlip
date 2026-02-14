@@ -1,4 +1,4 @@
-FROM golang:1.16-alpine
+FROM golang:1.25-alpine
 
 WORKDIR /app
 
@@ -10,5 +10,7 @@ RUN go mod tidy
 COPY . .
 
 RUN go install github.com/air-verse/air@latest
+
+EXPOSE 8080
 
 CMD ["air", ".air.toml"]

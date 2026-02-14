@@ -1,0 +1,43 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: doaflip-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgres://postgres:your_password@db:5432/doaflip
+    volumes:
+      - ./backend:/app
+    networks:
+      - doaflip-network
+
+  db:
+    image: postgres:16-alpine
+    container_name: doaflip-db
+    environment:
+      POSTGRES_DB: doaflip
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: your_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d doaflip"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      - doaflip-network
+
+networks:
+  doaflip-network:
+    driver: bridge
+
+volumes:
+  db-data:

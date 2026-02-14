@@ -1,7 +1,14 @@
 package router
 
-import "github.com/gin-gonic/gin"
+import( 
+	"github.com/gin-gonic/gin"
+
+	"backend/internal/users"
+)
 
 func SetupMainRouter(router *gin.Engine) {
-	// Inicializar os repos e criar grupos para passar para os routers individuais
+	userRepo := users.NewUsersRepository()
+	userGroup := router.Group("/api")
+
+	users.RegisterUserRoutes(userGroup, userRepo)
 }
