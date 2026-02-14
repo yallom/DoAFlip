@@ -36,7 +36,7 @@ export const router = createBrowserRouter([
             element: <Navigate to="/chatpage" replace />
         },                
         {
-          element: <NavBar/>,
+          //element: <NavBar/>,
           children: [
             {
               path: 'chat',
