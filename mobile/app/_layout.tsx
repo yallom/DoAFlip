@@ -4,13 +4,14 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from 'react-native';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import '@/global.css';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export const unstable_settings = {
-    anchor: '(tabs)',
+    anchor: 'login',
 };
 
 export default function RootLayout() {
@@ -20,11 +21,13 @@ export default function RootLayout() {
         <GluestackUIProvider mode="dark">
             <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
                 <SafeAreaProvider>
-                    <Stack>
-                        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-                    </Stack>
-                    <StatusBar style="auto" />
+                    <KeyboardProvider>
+                        <Stack>
+                            <Stack.Screen name="login" options={{ headerShown: false }} />
+                            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                        </Stack>
+                        <StatusBar style="auto" />
+                    </KeyboardProvider>
                 </SafeAreaProvider>
             </ThemeProvider>
         </GluestackUIProvider>

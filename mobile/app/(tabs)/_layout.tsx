@@ -1,33 +1,73 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import { Image } from 'react-native';
 
 import { HapticTab } from '@/components/tabs/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from 'react-native';
+import { AppColors } from '@/constants/theme';
 
 export default function TabLayout() {
-    const colorScheme = useColorScheme();
-
     return (
         <Tabs
             screenOptions={{
-                tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+                tabBarActiveTintColor: AppColors.primary,
+                tabBarInactiveTintColor: AppColors.inactive,
                 headerShown: false,
                 tabBarButton: HapticTab,
-            }}>
+                tabBarStyle: {
+                    backgroundColor: AppColors.backgroundDark,
+                    borderTopColor: 'rgba(255,255,255,0.05)',
+                },
+            }}
+        >
             <Tabs.Screen
                 name="index"
                 options={{
-                    title: 'Home',
-                    tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+                    title: 'Chat',
+                    tabBarIcon: ({ color }) => (
+                        <Image
+                            source={require('@/assets/images/chat.png')}
+                            style={{ width: 20, height: 20, tintColor: color }}
+                            resizeMode="contain"
+                        />
+                    ),
                 }}
             />
             <Tabs.Screen
-                name="explore"
+                name="stats"
                 options={{
-                    title: 'Explore',
-                    tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+                    title: 'Stats',
+                    tabBarIcon: ({ color }) => (
+                        <Image
+                            source={require('@/assets/images/stats.png')}
+                            style={{ width: 20, height: 20, tintColor: color }}
+                            resizeMode="contain"
+                        />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="meals"
+                options={{
+                    title: 'Meals',
+                    tabBarIcon: ({ color }) => (
+                        <Image
+                            source={require('@/assets/images/meals.png')}
+                            style={{ width: 20, height: 20, tintColor: color }}
+                            resizeMode="contain"
+                        />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="settings"
+                options={{
+                    title: 'Settings',
+                    tabBarIcon: ({ color }) => (
+                        <Image
+                            source={require('@/assets/images/settings.png')}
+                            style={{ width: 20, height: 20, tintColor: color }}
+                            resizeMode="contain"
+                        />
+                    ),
                 }}
             />
         </Tabs>
