@@ -11,9 +11,9 @@ services:
       db:
         condition: service_healthy
 
-  frontend:
+  webapp:
     build:
-      context: ./frontend
+      context: ./webapp
     ports:
       - "5173:5173"
     volumes:

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, Shield, Sparkles } from 'lucide-react';
-// import { Logo } from '@/assets/logo.png';
+import logo from '@/assets/logo.png';
+import bgLogin from '@/assets/bg_login.svg';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -17,19 +18,19 @@ const Login: React.FC = () => {
     <div 
       className="min-h-screen flex items-center justify-center p-5 relative"
       style={{
-        backgroundImage: "url('/assets/bg_login.svg')",
+        backgroundImage: `url(${bgLogin})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
       }}
     >
-      <div className="absolute inset-0 bg-[#001414]/70 backdrop-blur-sm"></div>
-      <div className="relative z-10 bg-[#0a1e1e]/85 backdrop-blur-xl border border-[#00ff88]/20 rounded-3xl p-12 w-full max-w-md shadow-2xl">
+      <div className="absolute inset-0 bg-[#001414]/70"></div>
+      <div className="relative z-10 bg-[#0a1e1e]/1 backdrop-blur-xl border border-[#00ff88]/20 rounded-3xl p-12 w-full max-w-md shadow-2xl">
         
         <div className="flex justify-center mb-6">
           <div className="w-16 h-16 bg-[#00ff88] rounded-full flex items-center justify-center p-3">
             <img 
-              src="../assets/logo.png" 
+              src={logo} 
               alt="NutriAI Logo" 
               className="w-full h-full object-contain"
             />
