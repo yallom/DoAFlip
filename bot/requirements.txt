@@ -1,0 +1,5 @@
+pip install pandas sentence-transformers faiss-cpu numpy
+pip install llama-index
+pip install llama-index-llms-ollama
+pip install llama-index-embeddings-ollama
+pip install llama-index-vector-stores-faiss
