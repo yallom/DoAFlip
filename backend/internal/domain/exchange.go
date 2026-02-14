@@ -1,7 +1,7 @@
 package domain
 
 type Exchange struct {
-	ID   string
-	Name string
-	Tax  float64
+	ID   int  `db:"id"`
+	Name string `db:"name"`
+	Tax  float64 `db:"tax"`
 }

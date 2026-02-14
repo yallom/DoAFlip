@@ -6,9 +6,16 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"backend/internal/database"
+	routerSetup "backend/internal/router"
+/*	"backend/internal/exchange"
+	"backend/internal/transaction"
+	"backend/internal/coins"*/
 )
 
 func main() {
+	database.ConnectDatabase()
+
 	env, err := config.LoadEnv()
 	if err != nil {
 		log.Fatal(err)
@@ -23,6 +30,8 @@ func main() {
 			"message": "pong",
 		})
 	})
+
+	routerSetup.SetupMainRouter(router)
 
 	router.Run()
 }

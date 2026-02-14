@@ -1,7 +1,7 @@
 package domain
 
 type Coin struct {
-	ID   string
-	Name string
-	CID  string
+	ID   int  `db:"id"`
+	Name string `db:"name"`
+	Token  string `db:"token"`
 }
