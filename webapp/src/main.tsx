@@ -17,6 +17,7 @@ const PublicRoute = lazy(() => import('@/components/PublicRoute'))
 
 const NavBar = lazy(() => import('@/components/NavBar'))
 const RecipesPage = lazy(() => import('@/pages/RecipesPage'))
+const RecipeDetailPage = lazy(() => import('@/pages/RecipeDetailPage'))
 const PlanPage = lazy(() => import('@/pages/PlanPage'))
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
 const RegisterPage = lazy(() => import('@/pages/RegisterPage'))
@@ -49,6 +50,10 @@ export const router = createBrowserRouter([
             {
               path: 'recipes',
               element: <RecipesPage/>,
+            },
+            {
+              path: 'recipes/:id',
+              element: <RecipeDetailPage/>,
             },
             {
               path: 'profile',

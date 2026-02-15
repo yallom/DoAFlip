@@ -9,7 +9,6 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
   
   const [name, setName] = useState('Alex Johnson');
   const [email, setEmail] = useState('alex.johnson@email.com');
-  const [location, setLocation] = useState('San Francisco, CA');
   const [age, setAge] = useState('28');
   const [gender, setGender] = useState('Non-binary');
   const [height, setHeight] = useState('178');
@@ -66,15 +65,6 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
                   <div>
                     <h1 className="text-3xl font-bold text-dark-green-2 mb-1">{name}</h1>
                     <p className="text-primary-green mb-2">{email}</p>
-                    <div className="flex items-center gap-4">
-                      <span className="px-3 py-1 bg-primary-green/20 text-primary-green text-xs font-semibold rounded-full border border-primary-green/30">
-                        PREMIUM MEMBER
-                      </span>
-                      <div className="flex items-center gap-1 text-dark-green-1 text-sm">
-                        <MapPin className="w-4 h-4" />
-                        <span>{location}</span>
-                      </div>
-                    </div>
                   </div>
                 </div>
                 

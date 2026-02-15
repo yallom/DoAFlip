@@ -100,7 +100,7 @@ const RecipesPage = () => {
                                 value={search}
                                 onChange={(event) => setSearch(event.target.value)}
                                 placeholder="Search recipes"
-                                className="h-10 w-full min-w-[200px] rounded-full border border-primary-green/20 bg-white px-4 text-sm text-dark-green-2 outline-none transition focus:border-primary-green focus:ring-2 focus:ring-primary-green/20"
+                                className="h-10 w-full min-w-50 rounded-full border border-primary-green/20 bg-white px-4 text-sm text-dark-green-2 outline-none transition focus:border-primary-green focus:ring-2 focus:ring-primary-green/20"
                             />
                         </div>
                         <div className="flex flex-col gap-1">
@@ -111,7 +111,7 @@ const RecipesPage = () => {
                                 id="recipe-filter"
                                 value={filter}
                                 onChange={(event) => setFilter(event.target.value as FilterOption)}
-                                className="h-10 w-full min-w-[170px] rounded-full border border-primary-green/20 bg-white px-4 text-sm text-dark-green-2 outline-none transition focus:border-primary-green focus:ring-2 focus:ring-primary-green/20"
+                                className="h-10 w-full min-w-42.5 rounded-full border border-primary-green/20 bg-white px-4 text-sm text-dark-green-2 outline-none transition focus:border-primary-green focus:ring-2 focus:ring-primary-green/20"
                             >
                                 <option value="All">All</option>
                                 <option value="Breakfast">Breakfast</option>
@@ -128,7 +128,7 @@ const RecipesPage = () => {
                                 id="recipe-order"
                                 value={order}
                                 onChange={(event) => setOrder(event.target.value as OrderOption)}
-                                className="h-10 w-full min-w-[190px] rounded-full border border-primary-green/20 bg-white px-4 text-sm text-dark-green-2 outline-none transition focus:border-primary-green focus:ring-2 focus:ring-primary-green/20"
+                                className="h-10 w-full min-w-47.5 rounded-full border border-primary-green/20 bg-white px-4 text-sm text-dark-green-2 outline-none transition focus:border-primary-green focus:ring-2 focus:ring-primary-green/20"
                             >
                                 <option value="name-asc">Name (A-Z)</option>
                                 <option value="calories-asc">Calories (Low-High)</option>

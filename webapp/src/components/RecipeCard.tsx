@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Flame, Drumstick, Wheat, Droplets } from "lucide-react";
 
 export type RecipeType = "Breakfast" | "Lunch" | "Dinner" | "Snacks";
@@ -23,7 +24,10 @@ const RecipeCard = ({ recipe }: RecipeCardProps) => {
     const { name, imageUrl, type, nutrition } = recipe;
 
     return (
-        <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-primary-green/20 bg-white shadow-sm transition-shadow hover:shadow-md">
+        <Link
+            to={`/recipes/${recipe.id}`}
+            className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-primary-green/20 bg-white shadow-sm transition-shadow hover:shadow-md"
+        >
             <div className="aspect-[4/3] w-full overflow-hidden bg-primary-green/10">
                 <img
                     src={imageUrl}
@@ -57,7 +61,7 @@ const RecipeCard = ({ recipe }: RecipeCardProps) => {
             <span className="absolute bottom-4 right-4 rounded-full border border-primary-green/30 bg-primary-green/15 px-3 py-1 text-xs font-semibold text-dark-green-2">
                 {type}
             </span>
-        </div>
+        </Link>
     );
 };
 
