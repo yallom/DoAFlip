@@ -1,48 +1,48 @@
 import { prisma } from '../index';
 import bcrypt from 'bcryptjs';
-import type { Genero, Objetivo, Utilizador } from '../types/types';
+import type { Gender, Goal, User } from '../types/types';
 
 export interface CreateUserDTO {
   email: string;
   password: string;
-  nome: string;
-  data_nascimento: Date;
-  altura_cm: number;
-  peso_kg: number;
-  genero: Genero;
-  objetivo: Objetivo;
+  name: string;
+  birthDate: Date;
+  height: number;
+  weight: number;
+  gender: Gender;
+  goal: Goal;
 }
 
 export interface UpdateUserDTO {
-  nome?: string;
-  data_nascimento?: Date;
-  altura_cm?: number;
-  peso_kg?: number;
-  genero?: Genero;
-  objetivo?: Objetivo;
+  name?: string;
+  birthDate?: Date;
+  height?: number;
+  weight?: number;
+  gender?: Gender;
+  goal?: Goal;
 }
 
 export interface UserResponse {
   id: string;
   email: string;
-  nome: string;
-  data_nascimento: Date;
-  altura_cm: number;
-  peso_kg: number;
-  genero: Genero;
-  objetivo: Objetivo;
+  name: string;
+  birthDate: Date;
+  height: number;
+  weight: number;
+  gender: Gender;
+  goal: Goal;
   created_at: Date;
   updated_at: Date;
 }
 
 class UserModel {
-  // Criar novo utilizador
+  // Criar novo user
   async create(data: CreateUserDTO): Promise<UserResponse> {
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     const { password, ...dataSemPassword } = data;
 
-    const user = await prisma.utilizador.create({
+    const user = await prisma.user.create({
       data: {
         ...dataSemPassword,
         hashPassword: hashedPassword,
@@ -52,34 +52,34 @@ class UserModel {
     return this.sanitizeUser(user);
   }
 
-  // Buscar utilizador por ID
+  // Buscar user por ID
   async findById(id: string): Promise<UserResponse | null> {
-    const user = await prisma.utilizador.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id },
     });
 
     return user ? this.sanitizeUser(user) : null;
   }
 
-  // Buscar utilizador por email
-  async findByEmail(email: string): Promise<Utilizador | null> {
-    return await prisma.utilizador.findUnique({
+  // Buscar user por email
+  async findByEmail(email: string): Promise<User | null> {
+    return await prisma.user.findUnique({
       where: { email },
     });
   }
 
   // Listar todos os utilizadores
   async findAll(): Promise<UserResponse[]> {
-    const users = await prisma.utilizador.findMany({
+    const users = await prisma.user.findMany({
       orderBy: { created_at: 'desc' },
     });
 
-    return users.map((user: Utilizador): UserResponse => this.sanitizeUser(user));
+    return users.map((user: User): UserResponse => this.sanitizeUser(user));
   }
 
-  // Atualizar utilizador
+  // Atualizar user
   async update(id: string, data: UpdateUserDTO): Promise<UserResponse> {
-    const user = await prisma.utilizador.update({
+    const user = await prisma.user.update({
       where: { id },
       data,
     });
@@ -91,15 +91,15 @@ class UserModel {
   async updatePassword(id: string, newPassword: string): Promise<void> {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     
-    await prisma.utilizador.update({
+    await prisma.user.update({
       where: { id },
       data: { hashPassword: hashedPassword },
     });
   }
 
-  // Eliminar utilizador
+  // Eliminar user
   async delete(id: string): Promise<void> {
-    await prisma.utilizador.delete({
+    await prisma.user.delete({
       where: { id },
     });
   }
@@ -110,14 +110,14 @@ class UserModel {
   }
 
   // Remover password do objeto de resposta
-  private sanitizeUser(user: Utilizador): UserResponse {
+  private sanitizeUser(user: User): UserResponse {
     const { hashPassword, ...userWithoutPassword } = user;
     return userWithoutPassword;
   }
 
   // Verificar se email já existe
   async emailExists(email: string): Promise<boolean> {
-    const user = await prisma.utilizador.findUnique({
+    const user = await prisma.user.findUnique({
       where: { email },
     });
     return !!user;

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Genero, Objetivo, type Utilizador } from '../types/types';
+import { Gender, Goal, type User } from '../types/types';
 
 /**
  * Schema para atualizar utilizador (apenas body)
@@ -9,14 +9,14 @@ export const updateUserSchema = z.object({
     id: z.string(),
   }),
   body: z.object({
-    nome: z
+    name: z
         .string()
         .min(2, 'Nome deve ter no mínimo 2 caracteres')
         .max(100, 'Nome deve ter no máximo 100 caracteres')
         .trim()
         .optional(),
 
-    data_nascimento: z
+    birthDate: z
         .string()
         .refine(
         (date) => {
@@ -39,7 +39,7 @@ export const updateUserSchema = z.object({
         )
         .optional(),
 
-    altura_cm: z
+    height: z
         .number({
         message: 'Altura deve ser um número',
         })
@@ -48,7 +48,7 @@ export const updateUserSchema = z.object({
         .max(250, 'Altura máxima: 250 cm')
         .optional(),
 
-    peso_kg: z
+    weight: z
         .number({
         message: 'Peso deve ser um número',
         })
@@ -56,15 +56,15 @@ export const updateUserSchema = z.object({
         .max(300, 'Peso máximo: 300 kg')
         .optional(),
 
-    genero: z
-        .nativeEnum(Genero, {
-        message: `Género deve ser: ${Object.values(Genero).join(', ')}`,
+    gender: z
+        .nativeEnum(Gender, {
+        message: `Género deve ser: ${Object.values(Gender).join(', ')}`,
         })
         .optional(),
 
-    objetivo: z
-        .nativeEnum(Objetivo, {
-        message: `Objetivo deve ser: ${Object.values(Objetivo).join(', ')}`,
+    goal: z
+        .nativeEnum(Goal, {
+        message: `Objetivo deve ser: ${Object.values(Goal).join(', ')}`,
         })
     })
     .optional(),

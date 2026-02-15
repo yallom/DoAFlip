@@ -1,24 +1,25 @@
-enum Genero {
-  MASCULINO = 'Masculino',
-  FEMININO = 'Feminino'
+enum Gender {
+  MASCULINO = 'MASCULINO',
+  FEMININO = 'FEMININO',
+  OUTRO = 'OUTRO',
 }
 
-enum Objetivo {
-  PERDA_PESO = 'perda_peso',
-  AUMENTO_MUSCULAR = 'aumento_muscular',
-  MANUTENCAO = 'manutencao',
+enum Goal {
+  PERDER_PESO = 'PERDER_PESO',
+  GANHAR_MUSCULO = 'GANHAR_MUSCULO',
+  MANUTENCAO = 'MANUTENCAO',
 }
 
-interface Utilizador {
+interface User {
   id: string;
   email: string;
   hashPassword: string;
-  nome: string;
-  data_nascimento: Date;
-  altura_cm: number;
-  peso_kg: number;
-  genero: Genero;
-  objetivo: Objetivo;
+  name: string;
+  birthDate: Date;
+  height: number;
+  weight: number;
+  gender: Gender;
+  goal: Goal;
   created_at: Date;
   updated_at: Date;
 }
@@ -33,5 +34,5 @@ interface PlanoAlimentar {
   observacoes: string;
 }
 
-export { Genero, Objetivo };
-export type { Utilizador, PlanoAlimentar };
+export { Gender, Goal };
+export type { User, PlanoAlimentar };

@@ -1,0 +1,2 @@
+bot/data/*
+!bot/data/.gitkeep
