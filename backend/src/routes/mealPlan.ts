@@ -13,7 +13,7 @@ const router = Router();
 //router.use(authMiddleware);
 
 /**
- * @route   GET /api/planoalimentar
+ * @route   GET /api/mealplan
  * @desc    Obter dados do plano alimentar autenticado
  * @access  Private
  */
@@ -27,27 +27,27 @@ router.get('/', mealPlanController.getAll);
 router.get('/:id', mealPlanController.getById);
 
 /**
- * @route   GET /api/planoalimentar/userid/:id
+ * @route   GET /api/mealplan/userid/:id
  * @desc    Obter plano alimentar por userID
  * @access  Private
  */
 router.get('/userid/:id', mealPlanController.getByUserId);
 /**
- * @route   POST /api/planoalimentar
+ * @route   POST /api/mealplan
  * @desc    Craiar novo plano alimentar
  * @access  Private
  */
 router.post('/', validateRequest(createMealPlanSchema), mealPlanController.create);
 
 /**
- * @route   PUT /api/planoalimentar/:id
+ * @route   PUT /api/mealplan/:id
  * @desc    Atualizar plano alimentar
  * @access  Private
  */
 router.put('/:id', validateRequest(updateMealPlanSchema), mealPlanController.update);
 
 /**
- * @route   DELETE /api/planoalimentar/:id
+ * @route   DELETE /api/mealplan/:id
  * @desc    Eliminar plano alimentar
  * @access  Private
  */
