@@ -1,3 +1,5 @@
+import { en } from "zod/locales";
+
 enum Gender {
   MASCULINE = 'Masculine',
   FEMININE = 'Feminine'
@@ -26,6 +28,13 @@ enum MealType {
   SNACK = 'snack'
 }
 
+enum Allergie {
+  PEANUTS = 'peanuts',
+  LACTOSE = 'lactose',
+  SOY = 'soy',
+  SEAFOOD = 'seafood',
+}
+
 interface User {
   id: string;
   email: string;
@@ -36,6 +45,7 @@ interface User {
   weight: number;
   gender: Gender;
   goal: Goal;
+  allergies: Allergie[];
   created_at: Date;
   updated_at: Date;
 }
@@ -78,5 +88,15 @@ interface Meal {
   created_at: Date
 }
 
-export { Gender, Goal, FoodCategory, MealType };
-export type { User, MealPlan, Food, Meal };
+interface Recipe {
+  id: string;
+  name: string;
+  description: string;
+  portions: number;
+  prep_time: number;
+  total_calories: number;
+  meal_id: string;
+}
+
+export { Gender, Goal, FoodCategory, MealType, Allergie };
+export type { User, MealPlan, Food, Meal, Recipe };

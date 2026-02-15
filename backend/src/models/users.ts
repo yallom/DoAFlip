@@ -1,6 +1,6 @@
 import { prisma } from '../index';
 import bcrypt from 'bcryptjs';
-import type { Gender, Goal, User } from '../types/types';
+import type { Gender, Goal, User, Allergie } from '../types/types';
 
 export interface CreateUserDTO {
   email: string;
@@ -11,6 +11,7 @@ export interface CreateUserDTO {
   weight: number;
   gender: Gender;
   goal: Goal;
+  allergies: Allergie[];
 }
 
 export interface UpdateUserDTO {
@@ -20,6 +21,7 @@ export interface UpdateUserDTO {
   weight?: number;
   gender?: Gender;
   goal?: Goal;
+  allergies?: Allergie[];
 }
 
 export interface UserResponse {
@@ -31,6 +33,7 @@ export interface UserResponse {
   weight: number;
   gender: Gender;
   goal: Goal;
+  allergies: Allergie[];
   created_at: Date;
   updated_at: Date;
 }

@@ -3,6 +3,7 @@ import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
 import mealPlanRoutes from './routes/mealPlan';
 import foodRoutes from './routes/foods';
+import recipeRoutes from './routes/recipe';
 import { PrismaClient } from '@prisma/client';
 import cors from 'cors'
 
@@ -26,6 +27,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/mealplan', mealPlanRoutes);
 app.use('/api/foods', foodRoutes);
+app.use('/api/recipes', recipeRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
