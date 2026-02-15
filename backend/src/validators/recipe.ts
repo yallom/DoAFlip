@@ -7,7 +7,7 @@ export const createRecipeSchema = z.object({
     portions: z.coerce.number().min(1),
     prep_time: z.coerce.number().min(0),
     total_calories: z.coerce.number().min(0),
-    meal_id: z.string().uuid()
+    meal_id: z.string()
   })
 });
 
@@ -18,6 +18,6 @@ export const updateRecipeSchema = z.object({
     portions: z.coerce.number().min(1).optional(),
     prep_time: z.coerce.number().min(0).optional(),
     total_calories: z.coerce.number().min(0).optional(),
-    meal_id: z.string().uuid().optional()
+    meal_id: z.string().optional()
   })
 });

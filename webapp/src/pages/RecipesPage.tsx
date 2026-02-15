@@ -1,61 +1,180 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import RecipeCard, { Recipe, RecipeType } from "@/components/RecipeCard";
+import axios from "axios";
 
 const placeholderImage = "https://placehold.co/600x400/13EC5B/1E352F?text=Recipe";
-
-const recipes: Recipe[] = [
-    {
-        id: "1",
-        name: "Avocado Egg Toast",
-        imageUrl: placeholderImage,
-        type: "Breakfast",
-        nutrition: { calories: 420, protein: 18, carbs: 34, fat: 24 },
-    },
-    {
-        id: "2",
-        name: "Citrus Chicken Bowl",
-        imageUrl: placeholderImage,
-        type: "Lunch",
-        nutrition: { calories: 540, protein: 42, carbs: 48, fat: 20 },
-    },
-    {
-        id: "3",
-        name: "Herb Salmon Plate",
-        imageUrl: placeholderImage,
-        type: "Dinner",
-        nutrition: { calories: 610, protein: 46, carbs: 22, fat: 34 },
-    },
-    {
-        id: "4",
-        name: "Greek Yogurt Parfait",
-        imageUrl: placeholderImage,
-        type: "Snacks",
-        nutrition: { calories: 260, protein: 20, carbs: 28, fat: 6 },
-    },
-    {
-        id: "5",
-        name: "Quinoa Veggie Power",
-        imageUrl: placeholderImage,
-        type: "Lunch",
-        nutrition: { calories: 480, protein: 22, carbs: 64, fat: 14 },
-    },
-    {
-        id: "6",
-        name: "Berry Protein Smoothie",
-        imageUrl: placeholderImage,
-        type: "Breakfast",
-        nutrition: { calories: 330, protein: 28, carbs: 38, fat: 8 },
-    },
-];
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5173/";
 
 type FilterOption = "All" | RecipeType;
 
 type OrderOption = "name-asc" | "calories-asc" | "protein-desc";
 
+interface BackendRecipe {
+    id: string;
+    name: string;
+    description: string | null;
+    portions: number;
+    prep_time: number;
+    total_calories: number;
+    meal_id: string;
+    ingredients?: Array<{
+        id: string;
+        recipe_id: string;
+        food_id: string;
+        quantity: number;
+        food?: {
+            id: string;
+            name: string;
+            calories: number;
+            protein: number;
+            carbs: number;
+            fat: number;
+        };
+    }>;
+}
+
+interface RecipeIngredient {
+    id: string;
+    recipe_id: string;
+    food_id: string;
+    quantity: number;
+    food?: {
+        id: string;
+        name: string;
+        calories: number;
+        protein: number;
+        carbs: number;
+        fat: number;
+    };
+}
+
+interface Food {
+    id: string;
+    name: string;
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+}
+
 const RecipesPage = () => {
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState<FilterOption>("All");
     const [order, setOrder] = useState<OrderOption>("name-asc");
+    const [recipes, setRecipes] = useState<Recipe[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    // Função para calcular os macronutrientes de uma receita
+    const calculateRecipeNutrition = async (recipe: BackendRecipe): Promise<Recipe> => {
+        try {
+            let totalCalories = 0;
+            let totalProtein = 0;
+            let totalCarbs = 0;
+            let totalFat = 0;
+
+            // Se os ingredientes já vêm inclusos na resposta
+            if (recipe.ingredients && recipe.ingredients.length > 0) {
+                for (const ingredient of recipe.ingredients) {
+                    if (ingredient.food) {
+                        // Multiplicar pela quantidade (assumindo que quantity é em gramas ou porções)
+                        totalCalories += ingredient.food.calories * (ingredient.quantity / 100);
+                        totalProtein += ingredient.food.protein * (ingredient.quantity / 100);
+                        totalCarbs += ingredient.food.carbs * (ingredient.quantity / 100);
+                        totalFat += ingredient.food.fat * (ingredient.quantity / 100);
+                    }
+                }
+            } else {
+                // Se precisar fazer requisição para os ingredientes
+                try {
+                    const ingredientsResponse = await axios.get(
+                        `${BACKEND_URL}/api/recipeingredient/recipe/${recipe.id}`
+                    );
+                    const ingredients: RecipeIngredient[] = ingredientsResponse.data.data || [];
+
+                    for (const ingredient of ingredients) {
+                        try {
+                            // Buscar dados nutricionais do alimento
+                            const foodResponse = await axios.get(
+                                `${BACKEND_URL}/api/foods/${ingredient.food_id}`
+                            );
+                            const food: Food = foodResponse.data.data;
+
+                            // Multiplicar pela quantidade (quantidade em gramas, nutrientes por 100g)
+                            totalCalories += food.calories * (ingredient.quantity / 100);
+                            totalProtein += food.protein * (ingredient.quantity / 100);
+                            totalCarbs += food.carbs * (ingredient.quantity / 100);
+                            totalFat += food.fat * (ingredient.quantity / 100);
+                        } catch (foodError) {
+                            console.error(`Erro ao buscar alimento ${ingredient.food_id}:`, foodError);
+                        }
+                    }
+                } catch (ingredientsError) {
+                    console.error(`Erro ao buscar ingredientes da receita ${recipe.id}:`, ingredientsError);
+                }
+            }
+
+            // Determinar o tipo de refeição baseado no meal_id ou usar um padrão
+            let recipeType: RecipeType = "Breakfast";
+            if (recipe.meal_id) {
+                // Se houver lógica específica para determinar o tipo pela meal_id, fazer aqui
+                // Por enquanto, usar um mapeamento simples
+                const mealTypeMap: { [key: string]: RecipeType } = {
+                    // Ajustar conforme necessário
+                };
+                recipeType = (mealTypeMap[recipe.meal_id] || "Breakfast") as RecipeType;
+            }
+
+            return {
+                id: recipe.id,
+                name: recipe.name,
+                imageUrl: placeholderImage,
+                type: recipeType,
+                nutrition: {
+                    calories: Math.round(totalCalories),
+                    protein: Math.round(totalProtein * 10) / 10,
+                    carbs: Math.round(totalCarbs * 10) / 10,
+                    fat: Math.round(totalFat * 10) / 10,
+                },
+            };
+        } catch (err) {
+            console.error("Erro ao calcular nutrição da receita:", err);
+            return {
+                id: recipe.id,
+                name: recipe.name,
+                imageUrl: placeholderImage,
+                type: "Breakfast",
+                nutrition: { calories: 0, protein: 0, carbs: 0, fat: 0 },
+            };
+        }
+    };
+
+    // Buscar receitas do backend
+    useEffect(() => {
+        const fetchRecipes = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                const response = await axios.get(`${BACKEND_URL}/api/recipes`);
+                const backendRecipes: BackendRecipe[] = response.data.data || [];
+
+                // Processar cada receita para calcular macronutrientes
+                const processedRecipes = await Promise.all(
+                    backendRecipes.map((recipe) => calculateRecipeNutrition(recipe))
+                );
+
+                setRecipes(processedRecipes);
+            } catch (err) {
+                console.error("Erro ao buscar receitas:", err);
+                setError("Erro ao carregar receitas. Por favor, tente novamente mais tarde.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchRecipes();
+    }, []);
 
     const filteredRecipes = useMemo(() => {
         const normalizedSearch = search.trim().toLowerCase();
@@ -77,7 +196,37 @@ const RecipesPage = () => {
         });
 
         return result;
-    }, [search, filter, order]);
+    }, [search, filter, order, recipes]);
+
+
+    
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-white flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-green mx-auto mb-4"></div>
+                    <p className="text-dark-green-1">Loading recipes...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-white flex items-center justify-center">
+                <div className="text-center">
+                    <p className="text-red-600 mb-4">{error}</p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="px-4 py-2 bg-primary-green text-white rounded-full hover:bg-primary-green/90"
+                    >
+                        Try Again
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-white">
@@ -138,11 +287,17 @@ const RecipesPage = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {filteredRecipes.map((recipe) => (
-                        <RecipeCard key={recipe.id} recipe={recipe} />
-                    ))}
-                </div>
+                {filteredRecipes.length === 0 ? (
+                    <div className="text-center py-12">
+                        <p className="text-dark-green-1 text-lg">No recipes found matching your criteria.</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        {filteredRecipes.map((recipe) => (
+                            <RecipeCard key={recipe.id} recipe={recipe} />
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );
