@@ -6,7 +6,8 @@
   "scripts": {
     "start": "bun run src/index.ts",
     "dev": "bun run src/index.ts --watch",
-    "pop-foods": "bun run src/scripts/populateFoods.ts"
+    "pop-foods": "bun run src/scripts/populateFoods.ts",
+    "seeder": "bun run src/scripts/seeder.ts"
   },
   "devDependencies": {
     "@faker-js/faker": "^10.3.0",
