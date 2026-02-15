@@ -27,14 +27,13 @@ const NavBar = ({ userName = "John Doe", userImage }: NavBarProps = {}) => {
             <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-6xl">
                 <div className="bg-white/95 backdrop-blur-md border border-[#13EC5B]/20 rounded-full px-6 py-3 shadow-lg shadow-[#13EC5B]/10">
                     <div className="flex items-center justify-between">
-                        {/* Left: Logo */}
+
                         <div className="flex items-center">
                             <Link to="/" className="flex items-center">
                                 <img src={logoComp} alt="NutriAI Logo" className="h-10 w-auto" />
                             </Link>
                         </div>
 
-                        {/* Center: Navigation Links */}
                         <div className="flex items-center gap-8">
                             <Link 
                                 to="/weekly-plan" 
@@ -56,7 +55,6 @@ const NavBar = ({ userName = "John Doe", userImage }: NavBarProps = {}) => {
                             </Link>
                         </div>
 
-                        {/* Right: User Profile */}
                         <div className="relative">
                             <button
                                 onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -81,7 +79,6 @@ const NavBar = ({ userName = "John Doe", userImage }: NavBarProps = {}) => {
                                 />
                             </button>
 
-                            {/* Dropdown Menu */}
                             {isMenuOpen && (
                                 <>
                                     <div 

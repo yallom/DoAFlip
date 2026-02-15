@@ -5,15 +5,12 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-darkgreen: #102216;
-  --color-green: #3C653C;
-  --color-lightgreen: #43B12E;
+  --color-primary-green: #13EC5B;
+  --color-dark-green-1: #335145;
+  --color-dark-green-2: #1E352F;
+  --color-white: #FFFFFF;
   --color-black: #000000;
   --color-gray: #EEEEEE;
-  --color-white: #FFFFFF;
-  --color-yellow: #FBBB2B;
-  --color-darkyellow: #E6B800;
-  --color-bgcolor: #F2EED3;
 }
 
 :root {
