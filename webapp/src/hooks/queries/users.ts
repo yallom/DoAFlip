@@ -9,6 +9,7 @@ export interface User {
     weight: number;
     gender: 'Masculine' | 'Feminine';
     goal: 'weight_loss' | 'muscle_gain' | 'maintenance';
+    allergies: ('peanuts' | 'lactose' | 'soy' | 'seafood')[];
     created_at: string;
     updated_at: string;
 }

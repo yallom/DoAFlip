@@ -9,6 +9,8 @@ export type AuthGender = 'Masculine' | 'Feminine';
 
 export type AuthGoal = 'weight_loss' | 'muscle_gain' | 'maintenance';
 
+export type AuthAllergy = 'peanuts' | 'lactose' | 'soy' | 'seafood';
+
 export interface RegisterPayload {
     email: string;
     password: string;
@@ -18,6 +20,7 @@ export interface RegisterPayload {
     weight: number;
     gender: AuthGender;
     goal: AuthGoal;
+    allergies: AuthAllergy[];
 }
 
 type AuthApiResponse = {

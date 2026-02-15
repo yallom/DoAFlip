@@ -5,7 +5,7 @@ import bgRegister from '@/assets/bg_register.png';
 import leaf from '@/assets/leaf.png';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-import type { AuthGender, AuthGoal } from '@/hooks/queries/auth';
+import type { AuthAllergy, AuthGender, AuthGoal } from '@/hooks/queries/auth';
 
 const Register: React.FC = () => {
     const [step, setStep] = useState(1);
@@ -24,10 +24,8 @@ const Register: React.FC = () => {
     const [weight, setWeight] = useState('70');
     const [weightUnit, setWeightUnit] = useState('kg');
 
-    const [allergies, setAllergies] = useState<string[]>(['Peanuts', 'Gluten']);
-    const [isAddingOther, setIsAddingOther] = useState(false);
-    const [otherAllergy, setOtherAllergy] = useState('');
-    const predefinedAllergies = ['Peanuts', 'Dairy', 'Gluten', 'Shellfish', 'Soy'];
+    const [allergies, setAllergies] = useState<string[]>(['Peanuts']);
+    const predefinedAllergies = ['Peanuts', 'Lactose', 'Soy', 'Seafood'];
 
     const [objective, setObjective] = useState('');
 
@@ -42,6 +40,19 @@ const Register: React.FC = () => {
         if (value === 'muscle-gain') return 'muscle_gain';
         if (value === 'health') return 'maintenance';
         return null;
+    };
+
+    const mapAllergy = (allergy: string): AuthAllergy => {
+        switch (allergy) {
+            case 'Peanuts':
+                return 'peanuts';
+            case 'Lactose':
+                return 'lactose';
+            case 'Soy':
+                return 'soy';
+            default:
+                return 'seafood';
+        }
     };
 
     const handleRegister = async () => {
@@ -75,6 +86,7 @@ const Register: React.FC = () => {
                 weight: weightInKg,
                 gender: mappedGender,
                 goal: mappedGoal,
+                allergies: allergies.map(mapAllergy),
             });
 
             if (success) {
@@ -95,18 +107,6 @@ const Register: React.FC = () => {
         } else {
             setAllergies([...allergies, allergy]);
         }
-    };
-
-    const addOtherAllergy = () => {
-        const trimmed = otherAllergy.trim();
-        if (!trimmed) return;
-
-        if (!allergies.includes(trimmed)) {
-            setAllergies([...allergies, trimmed]);
-        }
-
-        setOtherAllergy('');
-        setIsAddingOther(false);
     };
 
     const validatePassword = (pwd: string) => {
@@ -370,7 +370,7 @@ const Register: React.FC = () => {
                                             Food Allergies & Intolerances
                                         </label>
                                         <div className="flex flex-wrap gap-2">
-                                            {[...predefinedAllergies, ...allergies.filter(a => !predefinedAllergies.includes(a))].map((allergy) => (
+                                            {predefinedAllergies.map((allergy) => (
                                                 <button
                                                     key={allergy}
                                                     onClick={() => toggleAllergy(allergy)}
@@ -385,29 +385,6 @@ const Register: React.FC = () => {
                                                     )}
                                                 </button>
                                             ))}
-                                            {isAddingOther ? (
-                                                <input
-                                                    type="text"
-                                                    value={otherAllergy}
-                                                    onChange={(e) => setOtherAllergy(e.target.value)}
-                                                    onBlur={addOtherAllergy}
-                                                    onKeyDown={(e) => {
-                                                        if (e.key === 'Enter') {
-                                                            addOtherAllergy();
-                                                        }
-                                                    }}
-                                                    autoFocus
-                                                    placeholder="Enter allergy..."
-                                                    className="px-4 py-2 rounded-full text-sm font-medium bg-white border border-primary-green/50 outline-none"
-                                                />
-                                            ) : (
-                                                <button
-                                                    onClick={() => setIsAddingOther(true)}
-                                                    className="px-4 py-2 rounded-full text-sm font-medium bg-white border border-primary-green/30 text-primary-green hover:border-primary-green/50 transition-all"
-                                                >
-                                                    + Add Other
-                                                </button>
-                                            )}
                                         </div>
                                     </div>
                                 </>

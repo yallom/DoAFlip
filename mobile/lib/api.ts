@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosHeaders } from 'axios';
 import { Alert } from 'react-native';
 
 import { getToken } from '@/lib/token';
@@ -9,13 +9,11 @@ export const client = axios.create({
 
 client.interceptors.request.use(async (config) => {
   const token = await getToken();
-  const headers = {
-    ...(config.headers ?? {}),
-    'Content-Type': 'application/json',
-  };
+  const headers = AxiosHeaders.from(config.headers ?? {});
+  headers.set('Content-Type', 'application/json');
 
   if (token) {
-    headers.Authorization = `Bearer ${token}`;
+    headers.set('Authorization', `Bearer ${token}`);
   }
 
   config.headers = headers;
@@ -28,5 +26,5 @@ client.interceptors.response.use(
     const apiMessage = error?.response?.data?.message;
     Alert.alert('Erro', apiMessage || 'Ocorreu um erro inesperado. Tenta novamente.');
     return Promise.reject(error);
-  },
+  }
 );

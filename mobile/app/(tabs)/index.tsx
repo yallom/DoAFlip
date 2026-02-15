@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
-import { FlatList, View, ActivityIndicator, Text } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { FlatList, KeyboardAvoidingView, Platform, TouchableOpacity, View, ActivityIndicator, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import ScrollViewComponent from '@/components/scrollviews/keyboard-scroll-view'; 
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { ChatHeader } from '@/components/chatbot/chat-header';
 import { ChatInput } from '@/components/chatbot/chat-input';
@@ -16,7 +16,6 @@ interface Message extends MessageBoxProps {
 
 export default function ChatScreen() {
   const insets = useSafeAreaInsets();
-  const flatListRef = useRef<FlatList>(null);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -26,8 +25,42 @@ export default function ChatScreen() {
     },
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [inputHeight, setInputHeight] = useState(0);
+  const [isAtBottom, setIsAtBottom] = useState(true);
+  const [showScrollToEnd, setShowScrollToEnd] = useState(false);
+  const listRef = useRef<FlatList<Message>>(null);
+  const prevLengthRef = useRef(messages.length);
 
-  const handleSend = async (messageText: string) => {
+  const scrollToEnd = useCallback((animated = true) => {
+    listRef.current?.scrollToEnd({ animated });
+  }, []);
+
+  useEffect(() => {
+    scrollToEnd(false);
+  }, [scrollToEnd]);
+
+  useEffect(() => {
+    const prevLength = prevLengthRef.current;
+    if (messages.length <= prevLength) {
+      prevLengthRef.current = messages.length;
+      return;
+    }
+
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.isUser) {
+      scrollToEnd(true);
+      setShowScrollToEnd(false);
+    } else if (isAtBottom) {
+      scrollToEnd(true);
+      setShowScrollToEnd(false);
+    } else {
+      setShowScrollToEnd(true);
+    }
+
+    prevLengthRef.current = messages.length;
+  }, [messages, isAtBottom, scrollToEnd]);
+
+  const handleSend = useCallback(async (messageText: string) => {
     if (!messageText.trim() || isLoading) return;
 
     const userMessage: Message = {
@@ -48,7 +81,7 @@ export default function ChatScreen() {
       });
 
       const data = await response.json();
-      
+
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         message: data.response || 'Desculpa, não consegui processar a tua pergunta.',
@@ -67,37 +100,96 @@ export default function ChatScreen() {
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
-      setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
     }
-  };
+  }, [isLoading]);
+
+  const handleScroll = useCallback(
+    (event: {
+      nativeEvent: {
+        layoutMeasurement: { height: number };
+        contentOffset: { y: number };
+        contentSize: { height: number };
+      };
+    }) => {
+      const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+      const paddingToBottom = 24;
+      const atBottom =
+        layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+
+      setIsAtBottom(atBottom);
+      if (atBottom) {
+        setShowScrollToEnd(false);
+      }
+    },
+    [],
+  );
+
+  const handleOnLayout = (Event: any) => {
+    setInputHeight(Event.nativeEvent.layout.height);
+  }
+
+  const keyboardOffset = 2;
 
   return (
-    <View className="flex-1" style={{ backgroundColor: AppColors.backgroundLight }}>
+    <KeyboardAvoidingView
+      className="flex-1"
+      style={{ backgroundColor: AppColors.backgroundLight }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={keyboardOffset}
+    >
       <View style={{ height: insets.top, backgroundColor: AppColors.backgroundDark }} />
-      <ScrollViewComponent className="flex-1">
 
       <ChatHeader />
 
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <MessageBox {...item} />}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 16 }}
-        showsVerticalScrollIndicator={false}
-        className="flex-1"
-      />
-      
-      {isLoading && (
-        <View className="flex-row items-center px-4 pb-2">
-          <ActivityIndicator size="small" color={AppColors.primary} />
-          <Text className="ml-2 text-sm" style={{ color: AppColors.backgroundDark }}>
-            A pensar...
-          </Text>
-        </View>
-      )}
+      <View className="flex-1">
+        <FlatList
+          ref={listRef}
+          data={messages}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <MessageBox {...item} />}
+          contentContainerStyle={{
+            paddingHorizontal: 16,
+            paddingTop: 20,
+          }}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+          className="flex-1"
+        />
+
+        {isLoading && (
+          <View className="flex-row items-center px-4 pb-2">
+            <ActivityIndicator size="small" color={AppColors.primary} />
+            <Text className="ml-2 text-sm" style={{ color: AppColors.backgroundDark }}>
+              A pensar...
+            </Text>
+          </View>
+        )}
+
+        {showScrollToEnd && (
+          <TouchableOpacity
+            onPress={() => scrollToEnd(true)}
+            className="w-12 h-12 rounded-full items-center justify-center"
+            style={{
+              position: 'absolute',
+              right: 16,
+              bottom: inputHeight + 24,
+              backgroundColor: AppColors.primary,
+              shadowColor: '#13EC5B',
+              shadowOpacity: 0.25,
+              shadowRadius: 12,
+              shadowOffset: { width: 0, height: 6 },
+              elevation: 10,
+            }}
+          >
+            <MaterialCommunityIcons name="chevron-down" size={24} color={AppColors.backgroundDark} />
+          </TouchableOpacity>
+        )}
+      </View>
 
       <View
+        onLayout={(event) => handleOnLayout(event)}
         className="flex-row items-center"
         style={{
           backgroundColor: AppColors.backgroundLight,
@@ -105,11 +197,8 @@ export default function ChatScreen() {
           borderTopColor: '#FFFFFF1A',
         }}
       >
-        <ChatInput
-          onSend={handleSend}
-        />
+        <ChatInput onSend={handleSend} />
       </View>
-        </ScrollViewComponent>
-    </View>
+    </KeyboardAvoidingView>
   );
 }

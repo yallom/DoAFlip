@@ -17,20 +17,50 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
   const [weight, setWeight] = useState('');
   const [weightUnit, setWeightUnit] = useState('kg');
   const [allergies, setAllergies] = useState<string[]>([]);
-  const [isAddingOther, setIsAddingOther] = useState(false);
-  const [otherAllergy, setOtherAllergy] = useState('');
-  const predefinedAllergies = ['Peanuts', 'Dairy', 'Gluten', 'Shellfish', 'Soy'];
+  const predefinedAllergies = ['Peanuts', 'Lactose', 'Soy', 'Seafood'];
   const [dietaryPreferences, setDietaryPreferences] = useState<string[]>([]);
 
+  // BMI calculation
+  const heightM = parseFloat(height) / 100;
+  const weightKg = weightUnit === 'lb' ? parseFloat(weight) * 0.453592 : parseFloat(weight);
+  const bmi = heightM > 0 && weightKg > 0 ? weightKg / (heightM * heightM) : 0;
+  const bmiDisplay = bmi > 0 ? bmi.toFixed(1) : '--';
+
+  const getBmiCategory = (bmi: number) => {
+    if (bmi <= 0) return { label: '--', description: 'Enter your weight and height to calculate your BMI.', progress: 0 };
+    if (bmi < 18.5) return { label: 'Underweight', description: 'Your BMI indicates you are below the healthy weight range. Consider consulting a nutritionist.', progress: bmi / 40 };
+    if (bmi < 25) return { label: 'Healthy Range', description: 'Your BMI is currently within the optimal range for your height and age.', progress: bmi / 40 };
+    if (bmi < 30) return { label: 'Overweight', description: 'Your BMI indicates you are above the healthy weight range. A balanced diet and exercise can help.', progress: bmi / 40 };
+    return { label: 'Obese', description: 'Your BMI indicates obesity. Please consult a healthcare professional for guidance.', progress: Math.min(bmi / 40, 1) };
+  };
+
+  const bmiCategory = getBmiCategory(bmi);
+
   // Sincronizar estado local com dados do utilizador
+  const mapAllergyLabel = (allergy: string) => {
+    switch (allergy) {
+      case 'peanuts':
+        return 'Peanuts';
+      case 'lactose':
+        return 'Lactose';
+      case 'soy':
+        return 'Soy';
+      case 'seafood':
+        return 'Seafood';
+      default:
+        return allergy;
+    }
+  };
+
   useEffect(() => {
     if (user) {
       setName(user.name);
       setEmail(user.email);
       setAge(String(user.age));
-      setGender(user.gender);
+      setGender(user.gender === 'Masculine' ? 'Male' : 'Female');
       setHeight(String(user.height));
       setWeight(String(user.weight));
+      setAllergies((user.allergies ?? []).map(mapAllergyLabel));
     }
   }, [user]);
 
@@ -40,16 +70,6 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
     } else {
       setAllergies([...allergies, allergy]);
     }
-  };
-
-  const addOtherAllergy = () => {
-    const trimmed = otherAllergy.trim();
-    if (!trimmed) return;
-    if (!allergies.includes(trimmed)) {
-      setAllergies([...allergies, trimmed]);
-    }
-    setOtherAllergy('');
-    setIsAddingOther(false);
   };
 
   const toggleDietaryPreference = (pref: string) => {
@@ -188,20 +208,20 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
                       strokeWidth="12"
                       fill="none"
                       strokeDasharray={`${2 * Math.PI * 70}`}
-                      strokeDashoffset={`${2 * Math.PI * 70 * 0.25}`}
+                      strokeDashoffset={`${2 * Math.PI * 70 * (1 - bmiCategory.progress)}`}
                       className="text-primary-green"
                       strokeLinecap="round"
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-4xl font-bold text-dark-green-2">22.8</span>
+                    <span className="text-4xl font-bold text-dark-green-2">{bmiDisplay}</span>
                     <span className="text-sm text-primary-green">BMI INDEX</span>
                   </div>
                 </div>
 
                 <div className="text-center">
-                  <p className="text-primary-green font-semibold mb-2">Healthy Range</p>
-                  <p className="text-dark-green-1 text-sm">Your BMI is currently within the optimal range for your height and age.</p>
+                  <p className="text-primary-green font-semibold mb-2">{bmiCategory.label}</p>
+                  <p className="text-dark-green-1 text-sm">{bmiCategory.description}</p>
                 </div>
               </div>
             </div>
@@ -260,8 +280,8 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
                 <div className="flex items-center justify-center gap-4 mb-6">
                   <div className="flex flex-col items-center">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold mb-2 ${editStep >= 1
-                        ? 'bg-primary-green text-white'
-                        : 'bg-dark-green-1/10 border-2 border-dark-green-1/30 text-dark-green-1/50'
+                      ? 'bg-primary-green text-white'
+                      : 'bg-dark-green-1/10 border-2 border-dark-green-1/30 text-dark-green-1/50'
                       }`}>
                       1
                     </div>
@@ -274,8 +294,8 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
 
                   <div className="flex flex-col items-center">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold mb-2 ${editStep >= 2
-                        ? 'bg-primary-green text-white'
-                        : 'bg-dark-green-1/10 border-2 border-dark-green-1/30 text-dark-green-1/50'
+                      ? 'bg-primary-green text-white'
+                      : 'bg-dark-green-1/10 border-2 border-dark-green-1/30 text-dark-green-1/50'
                       }`}>
                       2
                     </div>
@@ -335,8 +355,8 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
                         <button
                           onClick={() => setGender('Male')}
                           className={`flex-1 px-3 py-3 rounded-xl font-medium text-sm transition-all ${gender === 'Male'
-                              ? 'bg-primary-green text-white'
-                              : 'bg-white border border-primary-green/30 text-dark-green-1/80 hover:border-primary-green/50'
+                            ? 'bg-primary-green text-white'
+                            : 'bg-white border border-primary-green/30 text-dark-green-1/80 hover:border-primary-green/50'
                             }`}
                         >
                           Male
@@ -344,8 +364,8 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
                         <button
                           onClick={() => setGender('Female')}
                           className={`flex-1 px-3 py-3 rounded-xl font-medium text-sm transition-all ${gender === 'Female'
-                              ? 'bg-primary-green text-white'
-                              : 'bg-white border border-primary-green/30 text-dark-green-1/80 hover:border-primary-green/50'
+                            ? 'bg-primary-green text-white'
+                            : 'bg-white border border-primary-green/30 text-dark-green-1/80 hover:border-primary-green/50'
                             }`}
                         >
                           Female
@@ -353,8 +373,8 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
                         <button
                           onClick={() => setGender('Non-binary')}
                           className={`px-3 py-3 rounded-xl font-medium text-sm transition-all ${gender === 'Non-binary'
-                              ? 'bg-primary-green text-white'
-                              : 'bg-white border border-primary-green/30 text-dark-green-1/80 hover:border-primary-green/50'
+                            ? 'bg-primary-green text-white'
+                            : 'bg-white border border-primary-green/30 text-dark-green-1/80 hover:border-primary-green/50'
                             }`}
                         >
                           Other
@@ -403,13 +423,13 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
                       Food Allergies & Intolerances
                     </label>
                     <div className="flex flex-wrap gap-2">
-                      {[...predefinedAllergies, ...allergies.filter(a => !predefinedAllergies.includes(a))].map((allergy) => (
+                      {predefinedAllergies.map((allergy) => (
                         <button
                           key={allergy}
                           onClick={() => toggleAllergy(allergy)}
                           className={`px-4 py-2 rounded-full text-sm font-medium transition-all relative ${allergies.includes(allergy)
-                              ? 'bg-primary-green/20 border-2 border-primary-green text-primary-green'
-                              : 'bg-white border border-primary-green/30 text-dark-green-1/80 hover:border-primary-green/50'
+                            ? 'bg-primary-green/20 border-2 border-primary-green text-primary-green'
+                            : 'bg-white border border-primary-green/30 text-dark-green-1/80 hover:border-primary-green/50'
                             }`}
                         >
                           {allergy}
@@ -418,29 +438,6 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
                           )}
                         </button>
                       ))}
-                      {isAddingOther ? (
-                        <input
-                          type="text"
-                          value={otherAllergy}
-                          onChange={(e) => setOtherAllergy(e.target.value)}
-                          onBlur={addOtherAllergy}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                              addOtherAllergy();
-                            }
-                          }}
-                          autoFocus
-                          placeholder="Enter allergy..."
-                          className="px-4 py-2 rounded-full text-sm font-medium bg-white border border-primary-green/50 outline-none"
-                        />
-                      ) : (
-                        <button
-                          onClick={() => setIsAddingOther(true)}
-                          className="px-4 py-2 rounded-full text-sm font-medium bg-white border border-primary-green/30 text-primary-green hover:border-primary-green/50 transition-all"
-                        >
-                          + Add Other
-                        </button>
-                      )}
                     </div>
                   </div>
 
@@ -461,8 +458,8 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
                           key={pref.value}
                           onClick={() => toggleDietaryPreference(pref.value)}
                           className={`w-full text-left px-5 py-4 rounded-xl transition-all ${dietaryPreferences.includes(pref.value)
-                              ? 'bg-primary-green/20 border-2 border-primary-green'
-                              : 'bg-white border border-primary-green/30 hover:border-primary-green/50'
+                            ? 'bg-primary-green/20 border-2 border-primary-green'
+                            : 'bg-white border border-primary-green/30 hover:border-primary-green/50'
                             }`}
                         >
                           <div className="flex items-center justify-between">
@@ -476,8 +473,8 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
                               </div>
                             </div>
                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${dietaryPreferences.includes(pref.value)
-                                ? 'border-primary-green bg-primary-green'
-                                : 'border-dark-green-1/30'
+                              ? 'border-primary-green bg-primary-green'
+                              : 'border-dark-green-1/30'
                               }`}>
                               {dietaryPreferences.includes(pref.value) && (
                                 <div className="w-2 h-2 bg-white rounded-full"></div>

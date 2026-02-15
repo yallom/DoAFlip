@@ -44,11 +44,12 @@ class UserModel {
     async create(data: CreateUserDTO): Promise<UserResponse> {
         const hashedPassword = await bcrypt.hash(data.password, 10);
 
-        const { password, ...dataSemPassword } = data;
+        const { password, allergies, ...dataSemPassword } = data;
 
         const user = await prisma.user.create({
             data: {
                 ...dataSemPassword,
+                ...(allergies ? { alergies: allergies } : {}),
                 hashPassword: hashedPassword,
             },
         });
@@ -103,9 +104,15 @@ class UserModel {
 
     // Atualizar user
     async update(id: string, data: UpdateUserDTO): Promise<UserResponse> {
+        const { allergies, ...rest } = data;
+        const prismaData = {
+            ...rest,
+            ...(allergies ? { alergies: allergies } : {}),
+        };
+
         const user = await prisma.user.update({
             where: { id },
-            data,
+            data: prismaData,
         });
         const sanitizableUser: User = this.mapPrismaUserToDomainUser(user);
 
