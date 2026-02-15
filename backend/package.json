@@ -8,16 +8,21 @@
     "dev": "bun run src/index.ts --watch"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
     "@types/bun": "latest",
-    "@types/express": "^5.0.6"
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
-    "@prisma/client": "^7.4.0",
+    "@prisma/client": "6",
+    "bcryptjs": "^3.0.3",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
-    "prisma": "^7.4.0"
+    "jsonwebtoken": "^9.0.3",
+    "prisma": "6",
+    "zod": "^4.3.6"
   }
 }
