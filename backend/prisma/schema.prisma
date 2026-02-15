@@ -39,6 +39,7 @@ enum FoodCategory {
   fruit
   fat
   dairy
+  grains
 }
 
 // Models
@@ -97,6 +98,19 @@ model Food {
   name                     String
   normalized_name         String
   category                FoodCategory
+  vit_c                   Float
+  vit_b11                 Float
+  sodium                   Float
+  calcium                 Float
+  iron                   Float
+  carbs                   Float
+  fat                 Float
+  fiber                   Float
+  protein                 Float
+  sugar                   Float
+  calories                 Float
+  health_score            Float
+
 
   // Relacionamentos
   recipe_ingredients     RecipeIngredient[]
