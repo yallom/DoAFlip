@@ -301,17 +301,6 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-dark-green-1/80 mb-2">Location</label>
-                    <input
-                      type="text"
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                      placeholder="City, State"
-                      className="w-full px-4 py-3 bg-white border border-primary-green/30 rounded-xl text-dark-green-2 placeholder:text-dark-green-1/40 focus:outline-none focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 transition-all"
-                    />
-                  </div>
-
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-dark-green-1/80 mb-2">Age</label>
