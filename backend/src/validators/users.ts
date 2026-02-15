@@ -65,7 +65,16 @@ export const updateUserSchema = z.object({
     goal: z
         .nativeEnum(Goal, {
         message: `Objetivo deve ser: ${Object.values(Goal).join(', ')}`,
-        })
+        }),
+    
+    allergies: z.array(z.string()).optional().refine(
+        (allergies) => {
+            if (!allergies) return true;
+            const validAllergies = ['peanuts', 'lactose', 'soy', 'seafood'];
+            return allergies.every((allergy) => validAllergies.includes(allergy));
+        },
+        { message: 'Alergias devem ser: peanuts, lactose, soy, seafood' }
+     )
     })
     .optional(),
 });

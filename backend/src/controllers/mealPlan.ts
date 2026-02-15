@@ -83,7 +83,7 @@ class MealPlanController {
       const mealPlanData: CreateMealPlanDTO = req.body;
 
       // Verificar se utilizador existe
-      const userExists = await userModel.findById(mealPlanData.utilizador_id);
+      const userExists = await userModel.findById(mealPlanData.user_id);
       if (!userExists) {
         return res.status(409).json({
           success: false,
