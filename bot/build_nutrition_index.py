@@ -98,4 +98,6 @@ with open("nutrition_docs.pkl", "wb") as f:
     pickle.dump(doc_list, f)
 print("Documentos guardados em: nutrition_docs.pkl")
 
+index.storage_context.persist(persist_dir="./storage_nutrition")
+
 print("\nBuild concluído!")
