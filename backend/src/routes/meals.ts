@@ -1,46 +1,55 @@
 import { Router } from 'express';
 import mealController from '../controllers/meals';
-//import { authMiddleware } from '../middleware/auth';
 import { validateRequest } from '../middleware/validation';
-import { updateMealSchema } from '../validators/meals';
-import { createMealSchema } from '../validators/meals';
+import { updateMealSchema, createMealSchema } from '../validators/meals';
 
 const router = Router();
 
-// Todas as rotas de foods requerem autenticação
-//router.use(authMiddleware);
-
 /**
- * @route   GET /api/foods
- * @desc    Listar todos os utilizadores
- * @access  Private (Admin apenas - adicionar middleware de autorização se necessário)
+ * @route   GET /api/meals
+ * @desc    Listar todas as refeições
+ * @access  Private
  */
 router.get('/', mealController.getAll);
 
 /**
- * @route   GET /api/foods/:id
- * @desc    Obter utilizador por ID
+ * @route   GET /api/meals/:id
+ * @desc    Obter refeição por ID
  * @access  Private
  */
 router.get('/:id', mealController.getById);
 
 /**
+ * @route   GET /api/meals/mealplan/:mealPlanId
+ * @desc    Obter refeições por Meal Plan ID
+ * @access  Private
+ */
+router.get('/mealplan/:mealPlanId', mealController.getByMealPlanId);
+
+/**
+ * @route   GET /api/meals/type/:type
+ * @desc    Obter refeições por tipo
+ * @access  Private
+ */
+router.get('/type/:type', mealController.getByType);
+
+/**
  * @route   POST /api/meals
- * @desc    Craiar novo plano alimentar
+ * @desc    Criar nova refeição
  * @access  Private
  */
 router.post('/', validateRequest(createMealSchema), mealController.create);
 
 /**
- * @route   PUT /api/foods/:id
- * @desc    Atualizar dados do utilizador
+ * @route   PUT /api/meals/:id
+ * @desc    Atualizar refeição
  * @access  Private
  */
 router.put('/:id', validateRequest(updateMealSchema), mealController.update);
 
 /**
- * @route   DELETE /api/foods/:id
- * @desc    Eliminar utilizador
+ * @route   DELETE /api/meals/:id
+ * @desc    Eliminar refeição
  * @access  Private
  */
 router.delete('/:id', mealController.delete);
