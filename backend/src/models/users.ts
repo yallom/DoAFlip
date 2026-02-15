@@ -40,9 +40,11 @@ class UserModel {
   async create(data: CreateUserDTO): Promise<UserResponse> {
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
+    const { password, ...dataSemPassword } = data;
+
     const user = await prisma.user.create({
       data: {
-        ...data,
+        ...dataSemPassword,
         hashPassword: hashedPassword,
       },
     });
