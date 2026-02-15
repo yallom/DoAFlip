@@ -1,10 +1,9 @@
 from llama_index.core import Settings, VectorStoreIndex, Document, PromptTemplate
 from llama_index.llms.ollama import Ollama
 from llama_index.embeddings.ollama import OllamaEmbedding
-from llama_index.vector_stores.faiss import FaissVectorStore
-import faiss
 import pickle
 import os
+import sys
 
 Settings.llm = Ollama(
     model="qwen2.5:7b-instruct-q5_k_m",
@@ -16,7 +15,6 @@ Settings.embed_model = OllamaEmbedding(
     model_name="nomic-embed-text"
 )
 
-# Prompt custom
 qa_prompt_tmpl = PromptTemplate(
     "Você é um assistente especializado em nutrição e alimentação saudável.\n"
     "Responda sempre de forma clara, objetiva e em português europeu.\n"
@@ -29,51 +27,52 @@ qa_prompt_tmpl = PromptTemplate(
     "Resposta:"
 )
 
-print("A carregar o RAG simplificado (FAISS + pickle)...")
+print("A carregar o RAG...")
 
 try:
-    with open("nutrition_docs.pkl", "rb") as f:
-        doc_list = pickle.load(f)
+    if not os.path.exists("nutrition_index.pkl"):
+        print("Ficheiro 'nutrition_index.pkl' não encontrado!")
+        print("Execute primeiro: python build_index.py")
+        exit(1)
     
-    documents = [Document(text=text, metadata=meta) for text, meta in doc_list]
-    print(f"Carregados {len(documents)} documentos do pickle.")
+    # Carrega documentos COM embeddings pré-calculados
+    print("A ler ficheiro pickle...")
+    with open("nutrition_index.pkl", "rb") as f:
+        docs_data = pickle.load(f)
     
-    if os.path.exists("nutrition_faiss.index"):
-        faiss_index = faiss.read_index("nutrition_faiss.index")
-        vector_store = FaissVectorStore(faiss_index=faiss_index)
-        print("FAISS carregado com sucesso.")
-    else:
-        print("FAISS não encontrado – vai reconstruir embeddings (pode demorar um pouco).")
-        vector_store = None
+    print(f"✓ Carregados {len(docs_data)} documentos")
     
-    # 3. Cria o índice a partir dos documentos
-    #   - Se FAISS existir, usa-o como base (mais rápido)
-    #   - Senão, deixa o llama-index recriar os embeddings
-    if vector_store:
-        index = VectorStoreIndex.from_documents(
-            documents,
-            storage_context=None,
-            vector_store=vector_store,
-            show_progress=True
+    # Reconstrói documentos de forma mais eficiente
+    print("A reconstruir índice...")
+    documents = [
+        Document(
+            text=d['text'],
+            metadata=d['metadata'],
+            embedding=d['embedding'],
+            id_=d['doc_id']
         )
-    else:
-        index = VectorStoreIndex.from_documents(
-            documents,
-            show_progress=True
-        )
+        for d in docs_data
+    ]
     
-    print("Índice reconstruído com sucesso!")
+    # Cria índice SEM recalcular embeddings
+    index = VectorStoreIndex(documents, show_progress=False)  # ← Desativa progress bar
+    print("Índice pronto!\n")
     
 except Exception as e:
-    print(f"Erro ao carregar/reconstruir o RAG: {e}")
+    print(f"Erro ao carregar: {e}")
+    import traceback
+    traceback.print_exc()
     exit(1)
 
+# Query engine com streaming habilitado
 query_engine = index.as_query_engine(
     text_qa_template=qa_prompt_tmpl,
     similarity_top_k=6,
+    streaming=True,
 )
 
-print("\nEm que posso ajudar?")
+print("Em que posso ajudar?")
+print("(escreve 'sair' para terminar)\n")
 
 while True:
     pergunta = input("Pergunta: ").strip()
@@ -86,9 +85,16 @@ while True:
         continue
     
     try:
-        resposta = query_engine.query(pergunta)
         print("\nResposta:")
-        print(str(resposta).strip())
-        print("-" * 90)
+        
+        # Query com streaming
+        streaming_response = query_engine.query(pergunta)
+        
+        # Imprime token por token à medida que chega
+        for text in streaming_response.response_gen:
+            print(text, end="", flush=True)
+        
+        print("\n" + "-" * 90 + "\n")
+        
     except Exception as e:
-        print(f"Erro ao processar a pergunta: {e}")
+        print(f"Erro ao processar a pergunta: {e}\n")
