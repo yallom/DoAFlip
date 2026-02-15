@@ -1,9 +1,8 @@
-from llama_index.core import Settings, VectorStoreIndex, Document, PromptTemplate
+from llama_index.core import Settings, PromptTemplate
 from llama_index.llms.ollama import Ollama
 from llama_index.embeddings.ollama import OllamaEmbedding
 import pickle
 import os
-import sys
 
 Settings.llm = Ollama(
     model="qwen2.5:7b-instruct-q5_k_m",
@@ -30,33 +29,16 @@ qa_prompt_tmpl = PromptTemplate(
 print("A carregar o RAG...")
 
 try:
-    if not os.path.exists("nutrition_index.pkl"):
-        print("Ficheiro 'nutrition_index.pkl' não encontrado!")
+    if not os.path.exists("nutrition_index_complete.pkl"):
+        print("Ficheiro 'nutrition_index_complete.pkl' não encontrado!")
         print("Execute primeiro: python build_index.py")
         exit(1)
     
-    # Carrega documentos COM embeddings pré-calculados
-    print("A ler ficheiro pickle...")
-    with open("nutrition_index.pkl", "rb") as f:
-        docs_data = pickle.load(f)
+    # Carrega o índice COMPLETO (já construído!)
+    with open("nutrition_index_complete.pkl", "rb") as f:
+        index = pickle.load(f)
     
-    print(f"✓ Carregados {len(docs_data)} documentos")
-    
-    # Reconstrói documentos de forma mais eficiente
-    print("A reconstruir índice...")
-    documents = [
-        Document(
-            text=d['text'],
-            metadata=d['metadata'],
-            embedding=d['embedding'],
-            id_=d['doc_id']
-        )
-        for d in docs_data
-    ]
-    
-    # Cria índice SEM recalcular embeddings
-    index = VectorStoreIndex(documents, show_progress=False)  # ← Desativa progress bar
-    print("Índice pronto!\n")
+    print("Índice carregado!\n")
     
 except Exception as e:
     print(f"Erro ao carregar: {e}")

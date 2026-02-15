@@ -82,22 +82,13 @@ index = VectorStoreIndex.from_documents(
     show_progress=True
 )
 
-print("\nA guardar documentos com embeddings...")
+print("\nA guardar o índice completo (já construído)...")
 
-# Guarda documentos COM embeddings já calculados
-docs_with_embeddings = []
-for doc_id, doc in index.docstore.docs.items():
-    docs_with_embeddings.append({
-        'doc_id': doc_id,
-        'text': doc.text,
-        'metadata': doc.metadata,
-        'embedding': doc.embedding  # Embedding já calculado!
-    })
+# Guarda o índice INTEIRO (não precisa reconstruir no query!)
+with open("nutrition_index_complete.pkl", "wb") as f:
+    pickle.dump(index, f)
 
-with open("nutrition_index.pkl", "wb") as f:
-    pickle.dump(docs_with_embeddings, f)
-
-print(f"✓ {len(docs_with_embeddings)} documentos guardados em: nutrition_index.pkl")
-print(f"Tamanho do ficheiro: {os.path.getsize('nutrition_index.pkl') / 1024 / 1024:.2f} MB")
+print(f"✓ Índice completo guardado em: nutrition_index_complete.pkl")
+print(f"Tamanho do ficheiro: {os.path.getsize('nutrition_index_complete.pkl') / 1024 / 1024:.2f} MB")
 print("\nBuild concluído com sucesso!")
 print("Agora podes executar: python query_nutrition.py")
