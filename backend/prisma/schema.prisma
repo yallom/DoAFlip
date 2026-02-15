@@ -14,143 +14,143 @@ datasource db {
 }
 
 // Enums
-enum Genero {
-  Masculino
-  Feminino
+enum Gender {
+  Masculine
+  Feminine
 }
 
-enum Objetivo {
-  perda_peso
-  aumento_muscular
-  manutencao
+enum Goal {
+  weight_loss
+  muscle_gain
+  maintenance
 }
 
-enum TipoRefeicao {
-  pequeno_almoco
-  almoco
-  jantar
-  lanche
+enum MealType {
+  breakfast
+  lunch
+  dinner
+  snack
 }
 
-enum CategoriaAlimento {
-  proteina
-  carboidrato
-  vegetal
-  fruta
-  gordura
-  lacteo
+enum FoodCategory {
+  protein
+  carbohidrate
+  vegetable
+  fruit
+  fat
+  dairy
 }
 
 // Models
-model Utilizador {
+model User {
   id                    String              @id @default(uuid())
   email                 String              @unique
   hashPassword          String
-  nome                  String
-  data_nascimento       DateTime
-  altura_cm             Int
-  peso_kg               Float
-  genero                Genero
-  objetivo              Objetivo
+  name                  String
+  birthDate       DateTime
+  height             Int
+  weight               Float
+  gender                Gender
+  goal              Goal
   created_at            DateTime            @default(now())
   updated_at            DateTime            @updatedAt
 
   // Relacionamentos
-  planoAlimentar        PlanoAlimentar[]
+  meal_plan        MealPlan[]
 
-  @@map("utilizadores")
+  @@map("users")
 }
 
-model Refeicao {
+model Meal {
   id                    String              @id @default(uuid())
-  planoAlimentar_id     String
-  tipo                  TipoRefeicao
-  data                  DateTime
-  data_criacao          DateTime            @default(now())
-  calorias_totais       Float               @default(0)
+  mealPlan_id     String
+  type                  MealType
+  date                  DateTime
+  created_at          DateTime            @default(now())
+  total_calories       Float               @default(0)
 
   // Relacionamentos
-  planoAlimentar        PlanoAlimentar      @relation(fields: [planoAlimentar_id], references: [id], onDelete: Cascade)
-  receitas              Receita[]
+  meal_plan        MealPlan      @relation(fields: [mealPlan_id], references: [id], onDelete: Cascade)
+  recipes              Recipe[]
 
-  @@map("refeicoes")
+  @@map("meals")
 }
 
-model PlanoAlimentar {
+model MealPlan {
   id                    String              @id @default(uuid())
-  utilizador_id         String
-  nome                  String
-  data_inicio           DateTime
-  data_fim              DateTime?
-  meta_calorias         Int
-  observacoes           String?
+  user_id         String
+  name                  String
+  start_date           DateTime
+  end_date              DateTime?
+  calorie_goal         Int
+  notes           String?
 
   // Relacionamentos
-  utilizador            Utilizador          @relation(fields: [utilizador_id], references: [id], onDelete: Cascade)
-  refeicoes             Refeicao[]
+  user            User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  meals             Meal[]
 
-  @@map("planos_alimentares")
+  @@map("meal_plans")
 }
 
-model Alimento {
+model Food {
   id                       String                   @id @default(uuid())
-  nome                     String
-  nome_normalizado         String
-  categoria                CategoriaAlimento
+  name                     String
+  normalized_name         String
+  category                FoodCategory
 
   // Relacionamentos
-  ingrediente_receitas     IngredienteReceita[]
-  substituicoes_origem     SubstituicaoAlimento[]   @relation("AlimentoOrigem")
-  substituicoes_substituto SubstituicaoAlimento[]   @relation("AlimentoSubstituto")
+  recipe_ingredients     RecipeIngredient[]
+  replacement_origins     FoodReplacement[]   @relation("AlimentoOrigem")
+  replacement_replacements FoodReplacement[]   @relation("AlimentoSubstituto")
 
-  @@map("alimentos")
+  @@map("foods")
 }
 
-model IngredienteReceita {
+model RecipeIngredient {
   id                       String                   @id @default(uuid())  
-  receita_id               String
-  alimento_id              String
-  quantidade_g             Float
+  recipe_id               String
+  food_id              String
+  quantity             Float
 
   // Relacionamentos
-  receita                  Receita                  @relation(fields: [receita_id], references: [id], onDelete: Cascade)
-  alimento                 Alimento                 @relation(fields: [alimento_id], references: [id], onDelete: Cascade)
-  substituicoes            SubstituicaoAlimento[]
+  recipe                  Recipe                  @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
+  food                 Food                 @relation(fields: [food_id], references: [id], onDelete: Cascade)
+  replacements            FoodReplacement[]
 
-  @@unique([receita_id, alimento_id])
-  @@map("ingredientes_receita")
+  @@unique([recipe_id, food_id])
+  @@map("recipe_ingredients")
 }
 
-model SubstituicaoAlimento {
+model FoodReplacement {
   id                     String              @id @default(uuid())
-  ingrediente_receita_id String
-  alimento_origem_id     String
-  alimento_substituto_id String
-  quantidade_g           Float
-  similaridade_score     Float
-  justificacao           String?
-  motivo                 String?
+  recipe_ingredient_id String
+  original_food_id     String
+  replacement_food_id String
+  quantity           Float
+  similarity_score     Float
+  justification           String?
+  reason                 String?
 
   // Relacionamentos
-  ingrediente_receita    IngredienteReceita  @relation(fields: [ingrediente_receita_id], references: [id], onDelete: Cascade)
-  alimento_origem        Alimento            @relation("AlimentoOrigem", fields: [alimento_origem_id], references: [id], onDelete: Cascade)
-  alimento_substituto    Alimento            @relation("AlimentoSubstituto", fields: [alimento_substituto_id], references: [id], onDelete: Cascade)
+  recipe_ingredient    RecipeIngredient  @relation(fields: [recipe_ingredient_id], references: [id], onDelete: Cascade)
+  original_food        Food            @relation("AlimentoOrigem", fields: [original_food_id], references: [id], onDelete: Cascade)
+  replacement_food    Food            @relation("AlimentoSubstituto", fields: [replacement_food_id], references: [id], onDelete: Cascade)
 
-  @@map("substituicoes_alimento")
+  @@map("food_replacements")
 }
 
-model Receita {
+model Recipe {
   id                    String                @id @default(uuid())
-  nome                  String
-  descricao             String?
-  porcoes               Int
-  tempo_preparo         Int
-  calorias_totais       Int
-  refeicao_id           String
+  name                  String
+  description             String?
+  portions               Int
+  prep_time         Int
+  total_calories       Int
+  meal_id           String
 
   // Relacionamentos
-  ingredientes          IngredienteReceita[]
-  refeicao              Refeicao              @relation(fields: [refeicao_id], references: [id], onDelete: Cascade)
+  ingredients          RecipeIngredient[]
+  meal              Meal              @relation(fields: [meal_id], references: [id], onDelete: Cascade)
 
-  @@map("receitas")
+  @@map("recipes")
 }
