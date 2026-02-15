@@ -58,9 +58,9 @@ const RecipeCard = ({ recipe }: RecipeCardProps) => {
                     </div>
                 </div>
             </div>
-            <span className="absolute bottom-4 right-4 rounded-full border border-primary-green/30 bg-primary-green/15 px-3 py-1 text-xs font-semibold text-dark-green-2">
+            {/*<span className="absolute bottom-4 right-4 rounded-full border border-primary-green/30 bg-primary-green/15 px-3 py-1 text-xs font-semibold text-dark-green-2">
                 {type}
-            </span>
+            </span>*/}
         </Link>
     );
 };

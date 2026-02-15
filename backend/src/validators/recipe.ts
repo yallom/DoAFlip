@@ -7,7 +7,7 @@ export const createRecipeSchema = z.object({
     portions: z.coerce.number().min(1),
     prep_time: z.coerce.number().min(0),
     total_calories: z.coerce.number().min(0),
-    meal_id: z.string()
+    meal_id: z.string().optional()
   })
 });
 

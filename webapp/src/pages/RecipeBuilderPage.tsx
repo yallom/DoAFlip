@@ -1,17 +1,17 @@
-import { Flame, Drumstick, Wheat, Droplets, Search, X } from "lucide-react";
+import { Flame, Drumstick, Wheat, Droplets, Search, X, Save } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
-import axios from "axios";
+import { client } from "../lib/axios.config";
 
 interface PlacedIngredient {
     id: string;
     x: number;
     y: number;
-    servings: number;
+    quantity: number;
 }
 
 interface ingredient {
     id: string;
-    name: string;
+    savename: string;
     imageUrl: string;
     nutrition: {
         calories: number;
@@ -25,17 +25,20 @@ const placeholderIngredientImage = "https://placehold.co/120x120/13EC5B/1E352F?t
 
 const RecipeBuilderPage = () => {
     const [search, setSearch] = useState("");
-    const [servings, setServings] = useState(1);
+    const [quantity, setQuantity] = useState(100); // Default 100g
     const [selectedIngredients, setSelectedIngredients] = useState<PlacedIngredient[]>([]);
     const [allIngredients, setAllIngredients] = useState<ingredient[]>([]);
+    const [recipeName, setRecipeName] = useState("");
+    const [recipeSaved, setRecipeSaved] = useState(false);
+    const [saving, setSaving] = useState(false);
 
     
 
     useEffect(() => {
         const fetchData = async () => {
-            const {data} = await axios.get('http://localhost:3000/api/foods/')
+            const {data} = await client.get("/api/foods/")
             console.log(data)
-            const formatted = data.data.map((d) => {
+            const formatted = data.data.map((d: any) => {
                 return {
                     id: d.id,
                     name: d.name,
@@ -65,10 +68,10 @@ const RecipeBuilderPage = () => {
             (acc, placed) => {
                 const ingredient = allIngredients.find((ing) => ing.id === placed.id);
                 if (ingredient) {
-                    acc.calories += ingredient.nutrition.calories * placed.servings;
-                    acc.protein += ingredient.nutrition.protein * placed.servings;
-                    acc.carbs += ingredient.nutrition.carbs * placed.servings;
-                    acc.fat += ingredient.nutrition.fat * placed.servings;
+                    acc.calories += ingredient.nutrition.calories * (placed.quantity / 100);
+                    acc.protein += ingredient.nutrition.protein * (placed.quantity / 100);
+                    acc.carbs += ingredient.nutrition.carbs * (placed.quantity / 100);
+                    acc.fat += ingredient.nutrition.fat * (placed.quantity / 100);
                 }
                 return acc;
             },
@@ -94,12 +97,89 @@ const RecipeBuilderPage = () => {
         const y = e.clientY - container.top - 24;
         
         if (ingredientId && !selectedIngredients.some((ing) => ing.id === ingredientId)) {
-            setSelectedIngredients((prev) => [...prev, { id: ingredientId, x, y, servings }]);
+            setSelectedIngredients((prev) => [...prev, { id: ingredientId, x, y, quantity }]);
         }
     };
 
     const removeIngredient = (ingredientId: string) => {
         setSelectedIngredients((prev) => prev.filter((ing) => ing.id !== ingredientId));
+    };
+
+    const handleUpdateQuantity = (ingredientId: string, newQuantity: number) => {
+        setSelectedIngredients((prev) =>
+            prev.map((ing) =>
+                ing.id === ingredientId ? { ...ing, quantity: Math.max(1, newQuantity) } : ing
+            )
+        );
+    };
+
+    const saveRecipe = async () => {
+        if (!recipeName.trim()) {
+            alert("Por favor, insira um nome para a receita");
+            return;
+        }
+
+        if (selectedIngredients.length === 0) {
+            alert("Por favor, adicione pelo menos um ingrediente");
+            return;
+        }
+
+        setSaving(true);
+        try {
+            console.log("Criando receita com dados:", {
+                name: recipeName,
+                description: "",
+                portions: 1,
+                prep_time: 0,
+                total_calories: Math.round(totals.calories),
+                meal_id: null
+            });
+
+            // Criar receita
+            const recipeResponse = await client.post("/api/recipes", {
+                name: recipeName,
+                description: "",
+                portions: 1,
+                prep_time: 0,
+                total_calories: Math.round(totals.calories)
+            });
+
+            console.log("Receita criada com sucesso:", recipeResponse.data);
+            const recipeId = recipeResponse.data.data.id;
+
+            // Adicionar ingredientes à receita
+            for (const ingredient of selectedIngredients) {
+                console.log("Adicionando ingrediente:", {
+                    recipe_id: recipeId,
+                    food_id: ingredient.id,
+                    quantity: ingredient.quantity
+                });
+
+                await client.post("/api/recipeingredients", {
+                    recipe_id: recipeId,
+                    food_id: ingredient.id,
+                    quantity: ingredient.quantity
+                });
+
+                console.log("Ingrediente adicionado com sucesso:", ingredient.id);
+            }
+
+            setRecipeSaved(true);
+            setRecipeName("");
+            setSelectedIngredients([]);
+            setTimeout(() => setRecipeSaved(false), 3000);
+            alert("Receita guardada com sucesso!");
+        } catch (error: any) {
+            console.error("Erro completo ao guardar receita:", error);
+            console.error("Dados da resposta do erro:", error.response?.data);
+            console.error("Status do erro:", error.response?.status);
+            console.error("Mensagem:", error.message);
+            
+            const errorMessage = error.response?.data?.message || error.message || "Erro desconhecido";
+            alert(`Erro ao guardar receita: ${errorMessage}`);
+        } finally {
+            setSaving(false);
+        }
     };
     
     return (
@@ -137,7 +217,7 @@ const RecipeBuilderPage = () => {
                                         style={{ left: `${placed.x}px`, top: `${placed.y}px` }}
                                     >
                                         <div
-                                            className="relative aspect-square rounded-lg bg-primary-green flex items-center justify-center p-2 cursor-move w-18 h-18"
+                                            className="relative aspect-square rounded-lg bg-primary-green flex items-center justify-center p-2 cursor-move w-20 h-24"
                                         >
                                             <button
                                                 onClick={() => removeIngredient(placed.id)}
@@ -145,10 +225,19 @@ const RecipeBuilderPage = () => {
                                             >
                                                 <X className="w-3 h-3 text-white" />
                                             </button>
-                                            <div className="text-center">
-                                                <p className="text-xs font-semibold text-dark-green-2 line-clamp-3">
-                                                    {placed.servings}x {ingredient.name}
+                                            <div className="text-center flex flex-col gap-2 w-full">
+                                                <p className="text-xs font-semibold text-dark-green-2 line-clamp-2">
+                                                    {ingredient.name}
                                                 </p>
+                                                <input
+                                                    type="number"
+                                                    value={placed.quantity}
+                                                    onChange={(e) => handleUpdateQuantity(placed.id, Number(e.target.value))}
+                                                    className="w-full px-1 py-0.5 rounded border border-dark-green-2 text-xs text-center"
+                                                    placeholder="g"
+                                                    min="1"
+                                                />
+                                                <span className="text-xs text-dark-green-2">{placed.quantity}g</span>
                                             </div>
                                         </div>
                                     </div>
@@ -195,14 +284,14 @@ const RecipeBuilderPage = () => {
                                     />
                                 </div>
                                 <div className="flex flex-col">
-                                    <label className="text-xs font-semibold text-dark-green-2 mb-1">Servings</label>
+                                    <label className="text-xs font-semibold text-dark-green-2 mb-1">Quantity (g)</label>
                                     <input
                                         type="number"
-                                        value={servings}
-                                        onChange={(e) => setServings(Math.max(0.1, Number(e.target.value)))}
-                                        min="0.1"
-                                        step="0.1"
-                                        className="w-16 rounded-full border border-primary-green/20 bg-white py-2 px-3 text-sm text-dark-green-2 outline-none transition focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 text-center"
+                                        value={quantity}
+                                        onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
+                                        min="1"
+                                        step="10"
+                                        className="w-20 rounded-full border border-primary-green/20 bg-white py-2 px-3 text-sm text-dark-green-2 outline-none transition focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 text-center"
                                     />
                                 </div>
                             </div>
@@ -238,6 +327,32 @@ const RecipeBuilderPage = () => {
                                         <span className="text-sm font-medium text-dark-green-2">{ingredient.name}</span>
                                     </div>
                                 ))}
+                            </div>
+
+                            <div className="mt-6 flex flex-col gap-3 pt-4 border-t border-primary-green/20">
+                                <div className="flex flex-col">
+                                    <label className="text-xs font-semibold text-dark-green-2 mb-2">Recipe Name</label>
+                                    <input
+                                        type="text"
+                                        value={recipeName}
+                                        onChange={(e) => setRecipeName(e.target.value)}
+                                        placeholder="Enter recipe name..."
+                                        className="w-full rounded-2xl border border-primary-green/20 bg-white py-2 px-4 text-sm text-dark-green-2 outline-none transition focus:border-primary-green focus:ring-2 focus:ring-primary-green/20"
+                                    />
+                                </div>
+                                <button
+                                    onClick={saveRecipe}
+                                    disabled={saving || selectedIngredients.length === 0}
+                                    className="flex items-center justify-center gap-2 rounded-2xl bg-primary-green py-2 px-4 text-sm font-semibold text-white transition hover:bg-primary-green/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <Save className="h-4 w-4" />
+                                    {saving ? "Saving..." : "Save Recipe"}
+                                </button>
+                                {recipeSaved && (
+                                    <div className="rounded-2xl bg-primary-green/10 px-4 py-2 text-sm text-primary-green font-medium">
+                                        ✓ Recipe saved successfully!
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

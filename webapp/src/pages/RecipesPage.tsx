@@ -3,7 +3,7 @@ import RecipeCard, { Recipe, RecipeType } from "@/components/RecipeCard";
 import axios from "axios";
 
 const placeholderImage = "https://placehold.co/600x400/13EC5B/1E352F?text=Recipe";
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5173/";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000/";
 
 type FilterOption = "All" | RecipeType;
 
