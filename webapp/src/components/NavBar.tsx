@@ -40,7 +40,7 @@ const NavBar = ({ userName = "John Doe", userImage }: NavBarProps = {}) => {
                                     Recipes
                                 </Link>
                                 <Link 
-                                    to="/settings" 
+                                    to="/recipebuilder" 
                                     className="text-dark-green-2 hover:text-primary-green font-medium transition-colors text-sm"
                                 >
                                     Recipe Builder

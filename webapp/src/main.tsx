@@ -21,7 +21,7 @@ const RecipeDetailPage = lazy(() => import('@/pages/RecipeDetailPage'))
 const PlanPage = lazy(() => import('@/pages/PlanPage'))
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
 const RegisterPage = lazy(() => import('@/pages/RegisterPage'))
-const SettingsPage = lazy(() => import('@/pages/SettingsPage'))
+const RecipeBuilderPage = lazy(() => import('@/pages/RecipeBuilderPage'))
 const LoadingPage = lazy(() => import('@/pages/LoadingPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
   
@@ -64,8 +64,8 @@ export const router = createBrowserRouter([
               element: <PlanPage/>,
             },
             {
-              path: 'settings',
-              element: <SettingsPage/>,
+              path: 'recipebuilder',
+              element: <RecipeBuilderPage/>,
             },
           ],
         },
