@@ -37,7 +37,7 @@ const Login: React.FC = () => {
                 backgroundRepeat: 'no-repeat'
             }}
         >
-            <div className="absolute inset-0 bg-white/90"></div>
+            <div className="absolute inset-0 bg-white/40"></div>
             <div className="relative z-10 bg-white backdrop-blur-xl border border-primary-green/20 rounded-3xl p-12 w-full max-w-md shadow-2xl">
 
                 <div className="flex justify-center mb-6">
