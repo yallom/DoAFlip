@@ -7,7 +7,7 @@ export interface CreateRecipeDTO {
   portions: number;
   prep_time: number;
   total_calories: number;
-  meal_id: string;
+  meal_id?: string;
 }
 
 export interface UpdateRecipeDTO {
@@ -26,14 +26,24 @@ export interface RecipeResponse {
   portions: number;
   prep_time: number;
   total_calories: number;
-  meal_id: string;
+  meal_id: string | null;
 }
 
 class RecipeModel {
   // Criar nova receita
   async create(data: CreateRecipeDTO): Promise<RecipeResponse> {
+    const recipeData: any = {
+      name: data.name,
+      portions: data.portions,
+      prep_time: data.prep_time,
+      total_calories: data.total_calories
+    };
+
+    if (data.description) recipeData.description = data.description;
+    if (data.meal_id) recipeData.meal_id = data.meal_id;
+
     const recipe = await prisma.recipe.create({
-      data
+      data: recipeData
     });
 
     return recipe;
@@ -44,7 +54,11 @@ class RecipeModel {
     const recipe = await prisma.recipe.findUnique({
       where: { id },
       include: {
-        ingredients: true,
+        ingredients: {
+          include: {
+            food: true
+          }
+        },
         meal: true
       }
     });
@@ -57,7 +71,11 @@ class RecipeModel {
     const recipes = await prisma.recipe.findMany({
       where: { meal_id: mealId },
       include: {
-        ingredients: true
+        ingredients: {
+          include: {
+            food: true
+          }
+        }
       }
     });
 
@@ -69,7 +87,11 @@ class RecipeModel {
     const recipes = await prisma.recipe.findMany({
       orderBy: { name: 'asc' },
       include: {
-        ingredients: true,
+        ingredients: {
+          include: {
+            food: true
+          }
+        },
         meal: true
       }
     });
@@ -83,7 +105,11 @@ class RecipeModel {
       where: { id },
       data,
       include: {
-        ingredients: true,
+        ingredients: {
+          include: {
+            food: true
+          }
+        },
         meal: true
       }
     });

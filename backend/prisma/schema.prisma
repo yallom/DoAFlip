@@ -168,11 +168,11 @@ model Recipe {
   portions               Int
   prep_time         Int
   total_calories       Int
-  meal_id           String
+  meal_id           String?
 
   // Relacionamentos
   ingredients          RecipeIngredient[]
-  meal              Meal              @relation(fields: [meal_id], references: [id], onDelete: Cascade)
+  meal              Meal?             @relation(fields: [meal_id], references: [id], onDelete: Cascade)
 
   @@map("recipes")
 }
