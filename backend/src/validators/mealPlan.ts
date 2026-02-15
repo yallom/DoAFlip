@@ -1,6 +1,6 @@
 import z from 'zod';
 
-export const createPlanoAlimentarSchema = z.object({
+export const createMealPlanSchema = z.object({
   body: z.object({
     nome: z.string().min(2).max(100),
     utilizador_id: z.string(),
@@ -11,7 +11,7 @@ export const createPlanoAlimentarSchema = z.object({
   })
 });
 
-export const updatePlanoAlimentarSchema = z.object({
+export const updateMealPlanSchema = z.object({
   body: z.object({
     nome: z.string().min(2).max(100).optional(),
     utilizador_id: z.string().optional(),
