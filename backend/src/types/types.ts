@@ -1,22 +1,22 @@
 enum Gender {
-  MASCULINE = 'MASCULINE',
-  FEMININE = 'FEMININE'
+  MASCULINE = 'Masculine',
+  FEMININE = 'Feminine'
 }
 
 enum Goal {
-  WEIGHT_LOSS = 'WEIGHT_LOSS',
-  MUSCLE_GAIN = 'MUSCLE_GAIN',
-  MAINTENANCE = 'MAINTENANCE',
+  WEIGHT_LOSS = 'weight_loss',
+  MUSCLE_GAIN = 'muscle_gain',
+  MAINTENANCE = 'maintenance',
 }
 
 enum FoodCategory {
-  PROTEIN = 'PROTEIN',
-  CARBOHIDRATE = 'CARBOHIDRATE',
-  VEGETABLE = 'VEGETABLE',
-  FRUIT = 'FRUIT',
-  FAT = 'FAT',
-  DAIRY = 'DAIRY',
-  GRAINS = 'GRAINS',
+  PROTEIN = 'protein',
+  CARBOHIDRATE = 'carbohidrate',
+  VEGETABLE = 'vegetable',
+  FRUIT = 'fruit',
+  FAT = 'fat',
+  DAIRY = 'dairy',
+  GRAINS = 'grains',
 }
 
 interface User {
@@ -62,5 +62,5 @@ interface PlanoAlimentar {
   observacoes: string;
 }
 
-export { Gender, Goal };
+export { Gender, Goal, FoodCategory };
 export type { User, PlanoAlimentar, Food };
