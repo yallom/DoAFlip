@@ -17,7 +17,9 @@ const records = parse(cleaned_csv, {
   skip_empty_lines: true
 });
 
-for (const row of records) {
+for (let i = 0; i < 400; i++) {
+
+    let row = records[i]
 
     try {
         let data = {
