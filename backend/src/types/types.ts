@@ -19,6 +19,13 @@ enum FoodCategory {
   GRAINS = 'grains',
 }
 
+enum MealType {
+  BREAKFAST = 'breakfast',
+  LUNCH = 'lunch',
+  DINNER = 'dinner',
+  SNACK = 'snack'
+}
+
 interface User {
   id: string;
   email: string;
@@ -62,5 +69,14 @@ interface MealPlan {
   notes: string;
 }
 
-export { Gender, Goal, FoodCategory };
-export type { User, MealPlan, Food };
+interface Meal {
+  id: string,
+  mealPlan_id: string,
+  type: MealType,
+  date: Date,
+  total_calories: number,
+  created_at: Date
+}
+
+export { Gender, Goal, FoodCategory, MealType };
+export type { User, MealPlan, Food, Meal };

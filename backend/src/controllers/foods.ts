@@ -138,34 +138,6 @@ class FoodController {
       });
     }
   }
-
-  // GET /foods/me - Obter dados do alimento autenticado
-  async getMe(req: Request, res: Response) {
-    try {
-      // O ID do alimento vem do middleware de autenticação
-      const foodId = (req as any).foodId;
-      
-      const food = await foodModel.findById(foodId);
-      
-      if (!food) {
-        return res.status(404).json({
-          success: false,
-          message: 'Alimento não encontrado',
-        });
-      }
-      
-      return res.status(200).json({
-        success: true,
-        data: food,
-      });
-    } catch (error) {
-      console.error('Erro ao buscar dados do alimento:', error);
-      return res.status(500).json({
-        success: false,
-        message: 'Erro ao buscar dados do alimento',
-      });
-    }
-  }
 }
 
 export default new FoodController();
