@@ -92,12 +92,12 @@ const Register: React.FC = () => {
           </div>
 
           <div className="mb-24">
-            <h1 className="text-5xl font-bold text-[#1E352F] leading-tight mb-4">
+            <h1 className="text-5xl font-bold text-dark-green-2 leading-tight mb-4">
               Fuel your body with
               <br />
-              <span className="text-[#13EC5B]">intelligence.</span>
+              <span className="text-primary-green">intelligence.</span>
             </h1>
-            <p className="text-[#335145]/80 text-lg">
+            <p className="text-dark-green-1/80 text-lg">
               Join users optimizing their health<br />
               through AI-driven personalized nutrition tips.
             </p>
@@ -121,58 +121,58 @@ const Register: React.FC = () => {
                 <div className="flex flex-col items-center">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold mb-2 ${
                     step >= 1 
-                      ? 'bg-[#13EC5B] text-white' 
-                      : 'bg-[#335145]/10 border-2 border-[#335145]/30 text-[#335145]/50'
+                      ? 'bg-primary-green text-white' 
+                      : 'bg-dark-green-1/10 border-2 border-dark-green-1/30 text-dark-green-1/50'
                   }`}>
                     1
                   </div>
                   <span className={`text-xs font-medium ${
-                    step >= 1 ? 'text-[#13EC5B]' : 'text-[#335145]/50'
+                    step >= 1 ? 'text-primary-green' : 'text-dark-green-1/50'
                   }`}>ACCOUNT</span>
                 </div>
 
                 <div className={`w-16 h-0.5 mb-6 ${
-                  step >= 2 ? 'bg-[#13EC5B]/30' : 'bg-[#335145]/20'
+                  step >= 2 ? 'bg-primary-green/30' : 'bg-dark-green-1/20'
                 }`}></div>
 
                 <div className="flex flex-col items-center">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold mb-2 ${
                     step >= 2 
-                      ? 'bg-[#13EC5B] text-white' 
-                      : 'bg-[#335145]/10 border-2 border-[#335145]/30 text-[#335145]/50'
+                      ? 'bg-primary-green text-white' 
+                      : 'bg-dark-green-1/10 border-2 border-dark-green-1/30 text-dark-green-1/50'
                   }`}>
                     2
                   </div>
                   <span className={`text-xs font-medium ${
-                    step >= 2 ? 'text-[#13EC5B]' : 'text-[#335145]/50'
+                    step >= 2 ? 'text-primary-green' : 'text-dark-green-1/50'
                   }`}>PERSONAL</span>
                 </div>
 
                 <div className={`w-16 h-0.5 mb-6 ${
-                  step >= 3 ? 'bg-[#13EC5B]/30' : 'bg-[#335145]/20'
+                  step >= 3 ? 'bg-primary-green/30' : 'bg-dark-green-1/20'
                 }`}></div>
 
                 <div className="flex flex-col items-center">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold mb-2 ${
                     step >= 3 
-                      ? 'bg-[#13EC5B] text-white' 
-                      : 'bg-[#335145]/10 border-2 border-[#335145]/30 text-[#335145]/50'
+                      ? 'bg-primary-green text-white' 
+                      : 'bg-dark-green-1/10 border-2 border-dark-green-1/30 text-dark-green-1/50'
                   }`}>
                     3
                   </div>
                   <span className={`text-xs font-medium ${
-                    step >= 3 ? 'text-[#13EC5B]' : 'text-[#335145]/50'
+                    step >= 3 ? 'text-primary-green' : 'text-dark-green-1/50'
                   }`}>DIETARY</span>
                 </div>
               </div>
 
               <div className="text-center">
-                <h2 className="text-2xl font-bold text-[#1E352F] mb-1">
+                <h2 className="text-2xl font-bold text-dark-green-2 mb-1">
                   {step === 1 && 'Create Your Account'}
                   {step === 2 && 'Personal Information'}
                   {step === 3 && 'Dietary Preferences'}
                 </h2>
-                <p className="text-[#335145]/60 text-sm">Step {step} of 3</p>
+                <p className="text-dark-green-1/60 text-sm">Step {step} of 3</p>
               </div>
             </div>
 
@@ -181,29 +181,29 @@ const Register: React.FC = () => {
               {step === 1 && (
                 <>
                   <div>
-                    <label className="block text-sm font-medium text-[#335145]/80 mb-2">Full Name</label>
+                    <label className="block text-sm font-medium text-dark-green-1/80 mb-2">Full Name</label>
                     <input
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Enter your full name"
-                      className="w-full px-4 py-3 bg-white border border-[#13EC5B]/30 rounded-xl text-[#1E352F] placeholder:text-[#335145]/40 focus:outline-none focus:border-[#13EC5B] focus:ring-2 focus:ring-[#13EC5B]/20 transition-all"
+                      className="w-full px-4 py-3 bg-white border border-primary-green/30 rounded-xl text-dark-green-2 placeholder:text-dark-green-1/40 focus:outline-none focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-[#335145]/80 mb-2">Email Address</label>
+                    <label className="block text-sm font-medium text-dark-green-1/80 mb-2">Email Address</label>
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="name@example.com"
-                      className="w-full px-4 py-3 bg-white border border-[#13EC5B]/30 rounded-xl text-[#1E352F] placeholder:text-[#335145]/40 focus:outline-none focus:border-[#13EC5B] focus:ring-2 focus:ring-[#13EC5B]/20 transition-all"
+                      className="w-full px-4 py-3 bg-white border border-primary-green/30 rounded-xl text-dark-green-2 placeholder:text-dark-green-1/40 focus:outline-none focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-[#335145]/80 mb-2">
+                    <label className="block text-sm font-medium text-dark-green-1/80 mb-2">
                       Password
                     </label>
                     <input
@@ -211,10 +211,10 @@ const Register: React.FC = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Create a secure password"
-                      className={`w-full px-4 py-3 bg-white border rounded-xl text-[#1E352F] placeholder:text-[#335145]/40 focus:outline-none focus:ring-2 transition-all ${
+                      className={`w-full px-4 py-3 bg-white border rounded-xl text-dark-green-2 placeholder:text-dark-green-1/40 focus:outline-none focus:ring-2 transition-all ${
                         password && !passwordValidation.isValid
                           ? 'border-red-400 focus:ring-red-200'
-                          : 'border-[#13EC5B]/30 focus:border-[#13EC5B] focus:ring-[#13EC5B]/20'
+                          : 'border-primary-green/30 focus:border-primary-green focus:ring-primary-green/20'
                       }`}
                     />
 
@@ -226,16 +226,16 @@ const Register: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-[#335145]/80 mb-2">Confirm Password</label>
+                    <label className="block text-sm font-medium text-dark-green-1/80 mb-2">Confirm Password</label>
                     <input
                       type="password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Re-enter your password"
-                      className={`w-full px-4 py-3 bg-white border rounded-xl text-[#1E352F] placeholder:text-[#335145]/40 focus:outline-none focus:ring-2 transition-all ${
+                      className={`w-full px-4 py-3 bg-white border rounded-xl text-dark-green-2 placeholder:text-dark-green-1/40 focus:outline-none focus:ring-2 transition-all ${
                         confirmPassword && !passwordsMatch
                           ? 'border-red-400 focus:ring-red-200'
-                          : 'border-[#13EC5B]/30 focus:border-[#13EC5B] focus:ring-[#13EC5B]/20'
+                          : 'border-primary-green/30 focus:border-primary-green focus:ring-primary-green/20'
                       }`}
                     />
                     {confirmPassword && !passwordsMatch && (
@@ -251,24 +251,24 @@ const Register: React.FC = () => {
                 <>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-[#335145]/80 mb-2">Age</label>
+                      <label className="block text-sm font-medium text-dark-green-1/80 mb-2">Age</label>
                       <input
                         type="number"
                         value={age}
                         onChange={(e) => setAge(e.target.value)}
-                        className="w-full px-4 py-3 bg-white border border-[#13EC5B]/30 rounded-xl text-[#1E352F] placeholder:text-[#335145]/40 focus:outline-none focus:border-[#13EC5B] focus:ring-2 focus:ring-[#13EC5B]/20 transition-all"
+                        className="w-full px-4 py-3 bg-white border border-primary-green/30 rounded-xl text-dark-green-2 placeholder:text-dark-green-1/40 focus:outline-none focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 transition-all"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-[#335145]/80 mb-2">Gender</label>
+                      <label className="block text-sm font-medium text-dark-green-1/80 mb-2">Gender</label>
                       <div className="flex gap-2">
                         <button
                           onClick={() => setGender('Male')}
                           className={`flex-1 px-4 py-3 rounded-xl font-medium transition-all ${
                             gender === 'Male'
-                              ? 'bg-[#13EC5B] text-white'
-                              : 'bg-white border border-[#13EC5B]/30 text-[#335145]/80 hover:border-[#13EC5B]/50'
+                              ? 'bg-primary-green text-white'
+                              : 'bg-white border border-primary-green/30 text-dark-green-1/80 hover:border-primary-green/50'
                           }`}
                         >
                           Male
@@ -277,8 +277,8 @@ const Register: React.FC = () => {
                           onClick={() => setGender('Female')}
                           className={`flex-1 px-4 py-3 rounded-xl font-medium transition-all ${
                             gender === 'Female'
-                              ? 'bg-[#13EC5B] text-white'
-                              : 'bg-white border border-[#13EC5B]/30 text-[#335145]/80 hover:border-[#13EC5B]/50'
+                              ? 'bg-primary-green text-white'
+                              : 'bg-white border border-primary-green/30 text-dark-green-1/80 hover:border-primary-green/50'
                           }`}
                         >
                           Female
@@ -287,8 +287,8 @@ const Register: React.FC = () => {
                           onClick={() => setGender('Other')}
                           className={`px-4 py-3 rounded-xl font-medium transition-all ${
                             gender === 'Other'
-                              ? 'bg-[#13EC5B] text-white'
-                              : 'bg-white border border-[#13EC5B]/30 text-[#335145]/80 hover:border-[#13EC5B]/50'
+                              ? 'bg-primary-green text-white'
+                              : 'bg-white border border-primary-green/30 text-dark-green-1/80 hover:border-primary-green/50'
                           }`}
                         >
                           Other
@@ -299,27 +299,27 @@ const Register: React.FC = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-[#335145]/80 mb-2">Height (cm)</label>
+                      <label className="block text-sm font-medium text-dark-green-1/80 mb-2">Height (cm)</label>
                       <input
                         type="number"
                         value={height}
                         onChange={(e) => setHeight(e.target.value)}
-                        className="w-full px-4 py-3 bg-white border border-[#13EC5B]/30 rounded-xl text-[#1E352F] placeholder:text-[#335145]/40 focus:outline-none focus:border-[#13EC5B] focus:ring-2 focus:ring-[#13EC5B]/20 transition-all"
+                        className="w-full px-4 py-3 bg-white border border-primary-green/30 rounded-xl text-dark-green-2 placeholder:text-dark-green-1/40 focus:outline-none focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 transition-all"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-[#335145]/80 mb-2">Weight</label>
+                      <label className="block text-sm font-medium text-dark-green-1/80 mb-2">Weight</label>
                       <div className="relative">
                         <input
                           type="number"
                           value={weight}
                           onChange={(e) => setWeight(e.target.value)}
-                          className="w-full px-4 py-3 bg-white border border-[#13EC5B]/30 rounded-xl text-[#1E352F] placeholder:text-[#335145]/40 focus:outline-none focus:border-[#13EC5B] focus:ring-2 focus:ring-[#13EC5B]/20 transition-all"
+                          className="w-full px-4 py-3 bg-white border border-primary-green/30 rounded-xl text-dark-green-2 placeholder:text-dark-green-1/40 focus:outline-none focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 transition-all"
                         />
                         <button
                           onClick={() => setWeightUnit(weightUnit === 'kg' ? 'lb' : 'kg')}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-[#13EC5B] text-sm font-medium hover:text-[#335145] transition-colors"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-primary-green text-sm font-medium hover:text-dark-green-1 transition-colors"
                         >
                           {weightUnit}
                         </button>
@@ -328,7 +328,7 @@ const Register: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-[#335145]/80 mb-3">
+                    <label className="block text-sm font-medium text-dark-green-1/80 mb-3">
                       Food Allergies & Intolerances
                     </label>
                     <div className="flex flex-wrap gap-2">
@@ -338,8 +338,8 @@ const Register: React.FC = () => {
                           onClick={() => toggleAllergy(allergy)}
                           className={`px-4 py-2 rounded-full text-sm font-medium transition-all relative ${
                             allergies.includes(allergy)
-                              ? 'bg-[#13EC5B]/20 border-2 border-[#13EC5B] text-[#13EC5B]'
-                              : 'bg-white border border-[#13EC5B]/30 text-[#335145]/80 hover:border-[#13EC5B]/50'
+                              ? 'bg-primary-green/20 border-2 border-primary-green text-primary-green'
+                              : 'bg-white border border-primary-green/30 text-dark-green-1/80 hover:border-primary-green/50'
                           }`}
                         >
                           {allergy}
@@ -361,12 +361,12 @@ const Register: React.FC = () => {
                           }}
                           autoFocus
                           placeholder="Enter allergy..."
-                          className="px-4 py-2 rounded-full text-sm font-medium bg-white border border-[#13EC5B]/50 outline-none"
+                          className="px-4 py-2 rounded-full text-sm font-medium bg-white border border-primary-green/50 outline-none"
                         />
                       ) : (
                         <button
                           onClick={() => setIsAddingOther(true)}
-                          className="px-4 py-2 rounded-full text-sm font-medium bg-white border border-[#13EC5B]/30 text-[#13EC5B] hover:border-[#13EC5B]/50 transition-all"
+                          className="px-4 py-2 rounded-full text-sm font-medium bg-white border border-primary-green/30 text-primary-green hover:border-primary-green/50 transition-all"
                         >
                           + Add Other
                         </button>
@@ -379,7 +379,7 @@ const Register: React.FC = () => {
               {step === 3 && (
                 <>
                   <div>
-                    <label className="block text-sm font-medium text-[#335145]/80 mb-3">
+                    <label className="block text-sm font-medium text-dark-green-1/80 mb-3">
                       What's your main health objective?
                     </label>
                     <div className="space-y-3">
@@ -393,25 +393,25 @@ const Register: React.FC = () => {
                           onClick={() => setObjective(obj.value)}
                           className={`w-full text-left px-5 py-4 rounded-xl transition-all ${
                             objective === obj.value
-                              ? 'bg-[#13EC5B]/20 border-2 border-[#13EC5B]'
-                              : 'bg-white border border-[#13EC5B]/30 hover:border-[#13EC5B]/50'
+                              ? 'bg-primary-green/20 border-2 border-primary-green'
+                              : 'bg-white border border-primary-green/30 hover:border-primary-green/50'
                           }`}
                         >
                           <div className="flex items-center justify-between">
                             <div>
                               <div className={`font-semibold mb-1 ${
-                                objective === obj.value ? 'text-[#13EC5B]' : 'text-[#1E352F]'
+                                objective === obj.value ? 'text-primary-green' : 'text-dark-green-2'
                               }`}>
                                 {obj.label}
                               </div>
-                              <div className="text-sm text-[#335145]/70">
+                              <div className="text-sm text-dark-green-1/70">
                                 {obj.desc}
                               </div>
                             </div>
                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                               objective === obj.value 
-                                ? 'border-[#13EC5B] bg-[#13EC5B]' 
-                                : 'border-[#335145]/30'
+                                ? 'border-primary-green bg-primary-green' 
+                                : 'border-dark-green-1/30'
                             }`}>
                               {objective === obj.value && (
                                 <div className="w-2 h-2 bg-white rounded-full"></div>
@@ -429,7 +429,7 @@ const Register: React.FC = () => {
                 {step > 1 && (
                   <button
                     onClick={() => setStep(step - 1)}
-                    className="flex items-center gap-2 px-6 py-3 text-[#335145]/80 hover:text-[#1E352F] transition-colors"
+                    className="flex items-center gap-2 px-6 py-3 text-dark-green-1/80 hover:text-dark-green-2 transition-colors"
                   >
                     <ArrowLeft size={20} />
                     <span className="font-medium">Back</span>
@@ -447,8 +447,8 @@ const Register: React.FC = () => {
                       step === 1 ? 'ml-auto' : ''
                     } ${
                       step === 1 && (!name.trim() || !email.trim() || !password || !confirmPassword || !passwordValidation.isValid || !passwordsMatch)
-                        ? 'bg-[#335145]/30 text-white/50 cursor-not-allowed'
-                        : 'bg-[#13EC5B] hover:bg-[#335145] text-white hover:shadow-lg hover:shadow-[#13EC5B]/20'
+                        ? 'bg-dark-green-1/30 text-white/50 cursor-not-allowed'
+                        : 'bg-primary-green hover:bg-dark-green-1 text-white hover:shadow-lg hover:shadow-primary-green/20'
                     }`}
                   >
                     <span>Continue</span>
@@ -457,7 +457,7 @@ const Register: React.FC = () => {
                 ) : (
                   <button
                     onClick={() => console.log('Submit registration')}
-                    className="flex items-center gap-2 px-8 py-3 bg-[#13EC5B] hover:bg-[#335145] text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-[#13EC5B]/20"
+                    className="flex items-center gap-2 px-8 py-3 bg-primary-green hover:bg-dark-green-1 text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-primary-green/20"
                   >
                     <a href='login'>Complete Registration</a>
                     <ArrowRight size={20} />
@@ -465,9 +465,9 @@ const Register: React.FC = () => {
                 )}
               </div>
 
-              <p className="text-center text-sm text-[#335145]/60 pt-2">
+              <p className="text-center text-sm text-dark-green-1/60 pt-2">
                 Already have an account?{' '}
-                <a href="/login" className="text-[#13EC5B] hover:text-[#335145] font-medium transition-colors">
+                <a href="/login" className="text-primary-green hover:text-dark-green-1 font-medium transition-colors">
                   Sign In
                 </a>
               </p>
