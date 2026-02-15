@@ -55,7 +55,7 @@ export const validateQuery = (schema: ZodSchema) => {
 
       return res.status(400).json({
         success: false,
-        message: 'Erro de validação',
+        message: 'Erro de validação de query',
         errors,
       });
     }

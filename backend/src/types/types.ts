@@ -24,5 +24,15 @@ interface User {
   updated_at: Date;
 }
 
+interface PlanoAlimentar {
+  id: string;
+  nome: string;
+  utilizador_id: string;
+  data_inicio: Date;
+  data_fim: Date;
+  meta_calorias: number;
+  observacoes: string;
+}
+
 export { Gender, Goal };
-export type { User };
+export type { User, PlanoAlimentar };
