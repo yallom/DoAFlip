@@ -52,15 +52,15 @@ interface Food {
   health_score: number;
 }
 
-interface PlanoAlimentar {
+interface MealPlan {
   id: string;
-  nome: string;
-  utilizador_id: string;
-  data_inicio: Date;
-  data_fim: Date;
-  meta_calorias: number;
-  observacoes: string;
+  name: string;
+  user_id: string;
+  start_date: Date;
+  end_date: Date;
+  calorie_goal: number;
+  notes: string;
 }
 
 export { Gender, Goal };
-export type { User, PlanoAlimentar, Food };
+export type { User, MealPlan, Food };

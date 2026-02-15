@@ -1,7 +1,7 @@
 import express from 'express';
 import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
-import planoAlimentarRoutes from './routes/planoalimentar';
+import mealPlanRoutes from './routes/mealPlan';
 import { PrismaClient } from '@prisma/client';
 
 export const prisma = new PrismaClient();
@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/planoalimentar', planoAlimentarRoutes);
+app.use('/api/mealplan', mealPlanRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
