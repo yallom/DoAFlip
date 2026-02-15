@@ -1,13 +1,12 @@
 enum Genero {
-  MASCULINO = 'MASCULINO',
-  FEMININO = 'FEMININO',
-  OUTRO = 'OUTRO',
+  MASCULINO = 'Masculino',
+  FEMININO = 'Feminino'
 }
 
 enum Objetivo {
-  PERDER_PESO = 'PERDER_PESO',
-  GANHAR_MUSCULO = 'GANHAR_MUSCULO',
-  MANUTENCAO = 'MANUTENCAO',
+  PERDA_PESO = 'perda_peso',
+  AUMENTO_MUSCULAR = 'aumento_muscular',
+  MANUTENCAO = 'manutencao',
 }
 
 interface Utilizador {
@@ -24,5 +23,15 @@ interface Utilizador {
   updated_at: Date;
 }
 
+interface PlanoAlimentar {
+  id: string;
+  nome: string;
+  utilizador_id: string;
+  data_inicio: Date;
+  data_fim: Date;
+  meta_calorias: number;
+  observacoes: string;
+}
+
 export { Genero, Objetivo };
-export type { Utilizador };
+export type { Utilizador, PlanoAlimentar };
