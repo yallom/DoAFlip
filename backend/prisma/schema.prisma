@@ -19,6 +19,13 @@ enum Gender {
   Feminine
 }
 
+enum Allergies{
+  peanuts
+  lactose
+  soy
+  seafood
+}
+
 enum Goal {
   weight_loss
   muscle_gain
@@ -48,10 +55,11 @@ model User {
   email                 String              @unique
   hashPassword          String
   name                  String
-  birthDate       DateTime
+  age       Int
   height             Int
   weight               Float
   gender                Gender
+  alergies          Allergies[]
   goal              Goal
   created_at            DateTime            @default(now())
   updated_at            DateTime            @updatedAt
