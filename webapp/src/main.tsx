@@ -33,7 +33,7 @@ export const router = createBrowserRouter([
       children: [
         {
             path: '/',
-            element: <Navigate to="/chatpage" replace />
+            element: <Navigate to="/chat" replace />
         },                
         {
           //element: <NavBar/>,
