@@ -1,6 +1,7 @@
 import React from 'react';
 import { FlatList, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import ScrollViewComponent from '@/components/scrollviews/keyboard-scroll-view'; 
 
 import { ChatHeader } from '@/components/chatbot/chat-header';
 import { ChatInput } from '@/components/chatbot/chat-input';
@@ -32,8 +33,9 @@ export default function ChatScreen() {
   const insets = useSafeAreaInsets();
 
   return (
-    <View className="flex-1" style={{ backgroundColor: AppColors.backgroundDark }}>
+    <View className="flex-1" style={{ backgroundColor: AppColors.backgroundLight }}>
       <View style={{ height: insets.top, backgroundColor: AppColors.backgroundDark }} />
+      <ScrollViewComponent className="flex-1">
 
       <ChatHeader />
 
@@ -48,7 +50,7 @@ export default function ChatScreen() {
       <View
         className="flex-row items-center"
         style={{
-          backgroundColor: AppColors.backgroundDark,
+          backgroundColor: AppColors.backgroundLight,
           borderTopWidth: 1,
           borderTopColor: '#FFFFFF1A',
         }}
@@ -59,6 +61,7 @@ export default function ChatScreen() {
           }}
         />
       </View>
+        </ ScrollViewComponent>
     </View>
   );
 }

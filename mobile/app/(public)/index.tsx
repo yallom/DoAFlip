@@ -19,7 +19,7 @@ export default function LoginScreen() {
   const passwordRef = useRef<RNTextInput>(null);
 
   return (
-    <LinearGradient colors={[AppColors.gradientStart, AppColors.gradientEnd]} style={{ flex: 1 }}>
+    <LinearGradient colors={[AppColors.backgroundLight, AppColors.backgroundLight]} style={{ flex: 1 }}>
       <SafeAreaView className="flex-1">
         <KeyboardScrollView
           contentContainerStyle={{
@@ -47,9 +47,8 @@ export default function LoginScreen() {
             NutriAI
           </ThemedText>
           <ThemedText
-            darkColor="rgba(255,255,255,0.5)"
             type="subtitle"
-            className="text-white/50 text-center mb-16"
+            className="!text-black/40 text-center mb-16"
           >
             Fuel your potential
           </ThemedText>
@@ -72,10 +71,6 @@ export default function LoginScreen() {
             <TextInput
               ref={passwordRef}
               label="Password"
-              labelAction={{
-                text: 'Forgot?',
-                onPress: () => {},
-              }}
               icon="lock-outline"
               placeholder="••••••••"
               secureTextEntry
@@ -98,7 +93,7 @@ export default function LoginScreen() {
 
           <View className="flex-row justify-center items-center mt-20">
             <ThemedText className="text-[15px] text-white/50">Don't have an account? </ThemedText>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/(public)/register')}>
               <ThemedText
                 className="text-[15px] font-semibold"
                 style={{ color: AppColors.textLink }}

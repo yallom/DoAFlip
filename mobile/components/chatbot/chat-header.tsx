@@ -7,19 +7,15 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 export function ChatHeader() {
   return (
     <View
-      className="flex-row items-center px-4 py-3"
+      className="flex-row items-center px-4 py-3 border-b border-white/10"
       style={{
         backgroundColor: AppColors.backgroundDark,
-        borderBottomWidth: 1,
-        borderBottomColor: '#FFFFFF1A',
       }}
     >
       <View
-        className="w-12 h-12 rounded-full items-center justify-center mr-3"
+        className="w-12 h-12 rounded-full items-center justify-center mr-3 border border-lime-500/20"
         style={{
-          backgroundColor: `${AppColors.primary}1A`,
-          borderWidth: 1,
-          borderColor: `${AppColors.primary}30`,
+          backgroundColor: AppColors.primary + '1A',
         }}
       >
         <Image
@@ -30,18 +26,14 @@ export function ChatHeader() {
       </View>
 
       <View className="flex-1">
-        <ThemedText className="text-white text-lg font-bold">NutriAI</ThemedText>
+        <ThemedText lightColor={AppColors.textWhite} className="text-white text-lg font-bold">NutriAI Bot </ThemedText>
         <View className="flex-row items-center gap-1">
           <View className="w-2 h-2 rounded-full" style={{ backgroundColor: AppColors.primary }} />
-          <ThemedText className="!text-sm" style={{ color: AppColors.primary }}>
+          <ThemedText lightColor={AppColors.textWhite} className="!text-sm text-lime-500">
             Online
           </ThemedText>
         </View>
       </View>
-
-      <TouchableOpacity className="p-2">
-        <MaterialCommunityIcons name="magnify" size={24} color={AppColors.textWhite} />
-      </TouchableOpacity>
     </View>
   );
 }

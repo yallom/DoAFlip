@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 
 import { ThemedText } from '@/components/themed/themed-text';
-import { AppColors } from '@/constants/theme';
+import { AppColors, Colors } from '@/constants/theme';
 
 export type TextInputProps = RNTextInputProps & {
   label?: string;
@@ -30,19 +30,13 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(function TextIn
       {(label || labelAction) && (
         <View className="flex-row justify-between items-center mb-2">
           {label && (
-            <ThemedText style={{ fontSize: 14, fontWeight: '500', color: AppColors.textWhite }}>
+            <ThemedText className="text-sm font-medium" style={{ color: Colors.light.text }}>
               {label}
             </ThemedText>
           )}
           {labelAction && (
             <TouchableOpacity onPress={labelAction.onPress}>
-              <ThemedText
-                style={{
-                  fontSize: 14,
-                  fontWeight: '500',
-                  color: AppColors.textLink,
-                }}
-              >
+              <ThemedText className="text-sm font-medium" style={{ color: AppColors.textLink }}>
                 {labelAction.text}
               </ThemedText>
             </TouchableOpacity>
@@ -53,7 +47,7 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(function TextIn
       <View
         className="flex-row items-center rounded-3xl px-4 h-[54px]"
         style={{
-          backgroundColor: AppColors.inputBackground,
+          backgroundColor: '#F9FAFB',
           borderWidth: 1,
           borderColor: AppColors.inputBorder,
         }}
@@ -69,14 +63,15 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(function TextIn
 
         <RNTextInput
           ref={ref}
-          className={`flex-1 text-base text-white ${className ?? ''}`}
+          className={`flex-1 text-base ${className ?? ''}`}
           style={{
             paddingVertical: 0,
             paddingTop: 0,
             height: '100%',
             lineHeight: 16,
+            color: Colors.light.text,
           }}
-          placeholderTextColor={AppColors.textMuted}
+          placeholderTextColor="rgba(51, 81, 69, 0.4)"
           secureTextEntry={isSecure}
           textAlignVertical="center"
           {...rest}

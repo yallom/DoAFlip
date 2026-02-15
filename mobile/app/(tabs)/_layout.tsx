@@ -43,9 +43,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="stats"
+        name="recipebuilder"
         options={{
-          title: 'Stats',
+          title: 'Recipe Builder',
           tabBarIcon: ({ color }) => (
             <Image
               source={require('@/assets/images/stats.png')}
@@ -56,9 +56,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="meals"
+        name="recipes"
         options={{
-          title: 'Meals',
+          title: 'Recipes',
           tabBarIcon: ({ color }) => (
             <Image
               source={require('@/assets/images/meals.png')}
@@ -69,7 +69,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="settings"
+        name="profile"
         options={{
           title: 'Profile',
           tabBarIcon: ({ color }) => (

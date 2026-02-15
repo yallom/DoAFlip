@@ -2,19 +2,19 @@ import { Platform } from 'react-native';
 
 export const Colors = {
     light: {
-        text: '#11181C',
-        background: '#F5F5F5',
+        text: '#000000',
+        background: '#FFFFFF',
         tint: '#13EC5B',
-        icon: '#94A3B8',
-        tabIconDefault: '#94A3B8',
+        icon: '#335145',
+        tabIconDefault: '#335145',
         tabIconSelected: '#13EC5B',
     },
     dark: {
         text: '#FFFFFF',
-        background: '#102216',
+        background: '#1E352F',
         tint: '#13EC5B',
         icon: '#94A3B8',
-        tabIconDefault: '#94A3B8',
+        tabIconDefault: '#335145',
         tabIconSelected: '#13EC5B',
     },
 };
@@ -45,18 +45,18 @@ export const Fonts = Platform.select({
 });
 
 export const AppColors = {
-    primary: '#13EC5B',
-    primaryDark: '#10B981',
-    backgroundDark: '#102216',
-    backgroundLight: '#F5F5F5',
-    gradientStart: 'rgba(16, 34, 22, 0.92)',
-    gradientEnd: 'rgba(16, 34, 22, 0.96)',
-    inputBackground: 'rgba(16, 34, 22, 0.50)',
-    inputBorder: 'rgba(255, 255, 255, 0.10)',
-    secondaryButtonBg: 'rgba(255, 255, 255, 0.05)',
-    secondaryButtonBorder: 'rgba(255, 255, 255, 0.10)',
-    textWhite: '#FFFFFF',
-    textMuted: 'rgba(255, 255, 255, 0.50)',
-    textLink: '#13EC5B',
-    inactive: '#94A3B8',
+    primary: Colors.light.tint,
+    primaryDark: Colors.light.tint,
+    backgroundDark: Colors.dark.background,
+    backgroundLight: Colors.light.background,
+    gradientStart: 'rgba(30, 53, 47, 0.92)',
+    gradientEnd: 'rgba(30, 53, 47, 0.96)',
+    inputBackground: 'rgba(19, 236, 91, 0.10)',
+    inputBorder: 'rgba(19, 236, 91, 0.20)',
+    secondaryButtonBg: 'rgba(19, 236, 91, 0.10)',
+    secondaryButtonBorder: 'rgba(19, 236, 91, 0.20)',
+    textWhite: Colors.light.background,
+    textMuted: Colors.light.icon,
+    textLink: Colors.light.tint,
+    inactive: Colors.dark.icon,
 };

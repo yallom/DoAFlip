@@ -15,7 +15,7 @@ export function MessageBox({ message, timestamp, isUser = false }: MessageBoxPro
             {!isUser && (
                 <View
                     className="w-11 h-11 rounded-full items-center justify-center mr-2 mt-1"
-                    style={{ backgroundColor: `${AppColors.primary}1A` }}
+                    style={{ backgroundColor: AppColors.primary + '1A' }}
                 >
                     <Image
                         source={require('@/assets/images/chatbot.png')}
@@ -33,10 +33,7 @@ export function MessageBox({ message, timestamp, isUser = false }: MessageBoxPro
                     }}
                 >
                     <ThemedText
-                        className="text-[15px] leading-5"
-                        style={{
-                            color: isUser ? AppColors.backgroundDark : AppColors.textWhite,
-                        }}
+                        className={`text-[15px] leading-5 ${isUser ? 'text-stone-900' : 'text-white'}`}
                     >
                         {message}
                     </ThemedText>
@@ -44,8 +41,7 @@ export function MessageBox({ message, timestamp, isUser = false }: MessageBoxPro
 
                 <ThemedText
                     type="default"
-                    className="!text-sm mt-1 mx-1"
-                    style={{ color: AppColors.textMuted }}
+                    className="!text-sm mt-1 mx-1 text-white/50"
                 >
                     {timestamp}
                 </ThemedText>
