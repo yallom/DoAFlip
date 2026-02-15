@@ -1,14 +1,13 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRef, useState } from 'react';
-import { Image, TextInput as RNTextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, TextInput as RNTextInput, TouchableOpacity, View } from 'react-native';
 
 import { PrimaryButton } from '@/components/buttons/primary-button';
-import { SecondaryButton } from '@/components/buttons/secondary-button';
 import { TextInput } from '@/components/inputs/text-input';
 import KeyboardScrollView from '@/components/scrollviews/keyboard-scroll-view';
 import { ThemedText } from '@/components/themed/themed-text';
 import { AppColors } from '@/constants/theme';
+import { useAuth } from '@/hooks/useAuth';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -17,6 +16,19 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const emailRef = useRef<RNTextInput>(null);
   const passwordRef = useRef<RNTextInput>(null);
+  const { login, loginLoading } = useAuth();
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Preenche os dados', 'Email e password sao obrigatorios.');
+      return;
+    }
+
+    const success = await login(email.trim(), password);
+    if (success) {
+      router.replace('/(tabs)');
+    }
+  };
 
   return (
     <LinearGradient colors={[AppColors.backgroundLight, AppColors.backgroundLight]} style={{ flex: 1 }}>
@@ -84,9 +96,8 @@ export default function LoginScreen() {
 
             <PrimaryButton
               title="Sign In"
-              onPress={() => {
-                router.push('/(tabs)');
-              }}
+              loading={loginLoading}
+              onPress={handleLogin}
               className="mt-8"
             />
           </View>

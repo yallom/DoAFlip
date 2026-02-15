@@ -9,6 +9,8 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import '@/global.css';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { AuthProvider } from '@/hooks/useAuth';
+import { UserProvider } from '@/hooks/useUser';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -18,11 +20,15 @@ export default function RootLayout() {
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <SafeAreaProvider>
           <KeyboardProvider>
-            <Stack>
-              <Stack.Screen name="(public)" options={{ headerShown: false }} />
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            </Stack>
-            <StatusBar style="auto" />
+            <UserProvider>
+              <AuthProvider>
+                <Stack>
+                  <Stack.Screen name="(public)" options={{ headerShown: false }} />
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                </Stack>
+                <StatusBar style="auto" />
+              </AuthProvider>
+            </UserProvider>
           </KeyboardProvider>
         </SafeAreaProvider>
       </ThemeProvider>

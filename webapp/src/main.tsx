@@ -6,6 +6,8 @@ import { Navigate } from 'react-router-dom'
 import { ConfigProvider } from "antd";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import ptPT from "antd/locale/pt_PT";
+import { AuthProvider } from '@/hooks/useAuth'
+import { UserProvider } from '@/hooks/useUser'
 
 const queryClient = new QueryClient();
 
@@ -24,53 +26,53 @@ const RegisterPage = lazy(() => import('@/pages/RegisterPage'))
 const RecipeBuilderPage = lazy(() => import('@/pages/RecipeBuilderPage'))
 const LoadingPage = lazy(() => import('@/pages/LoadingPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
-  
+
 
 export const router = createBrowserRouter([
-    {
-      element: <App />,
-      errorElement: <NotFoundPage />,
-      ErrorBoundary: NotFoundPage,
-      children: [
-        {
-            path: '/',
-            element: <Navigate to="/login" replace />
-        },
-        {
-          path: 'login',
-          element: <LoginPage/>,
-        },
-        {
-          path: 'register',
-          element: <RegisterPage/>,
-        },
-        {
-          element: <NavBar/>,
-          children: [
-            {
-              path: 'recipes',
-              element: <RecipesPage/>,
-            },
-            {
-              path: 'recipes/:id',
-              element: <RecipeDetailPage/>,
-            },
-            {
-              path: 'profile',
-              element: <ProfilePage/>,
-            },
-            {
-              path: 'plan',
-              element: <PlanPage/>,
-            },
-            {
-              path: 'recipebuilder',
-              element: <RecipeBuilderPage/>,
-            },
-          ],
-        },
-      ],
-    },
+  {
+    element: <App />,
+    errorElement: <NotFoundPage />,
+    ErrorBoundary: NotFoundPage,
+    children: [
+      {
+        path: '/',
+        element: <Navigate to="/login" replace />
+      },
+      {
+        path: 'login',
+        element: <LoginPage />,
+      },
+      {
+        path: 'register',
+        element: <RegisterPage />,
+      },
+      {
+        element: <NavBar />,
+        children: [
+          {
+            path: 'recipes',
+            element: <RecipesPage />,
+          },
+          {
+            path: 'recipes/:id',
+            element: <RecipeDetailPage />,
+          },
+          {
+            path: 'profile',
+            element: <ProfilePage />,
+          },
+          {
+            path: 'plan',
+            element: <PlanPage />,
+          },
+          {
+            path: 'recipebuilder',
+            element: <RecipeBuilderPage />,
+          },
+        ],
+      },
+    ],
+  },
 ])
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -80,12 +82,16 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         locale={ptPT}
         theme={{
           token: {
-            colorPrimary: sessionStorage.getItem("colorMode") == "light" ? "#D2F1E4" : "#48304D", 
+            colorPrimary: sessionStorage.getItem("colorMode") == "light" ? "#D2F1E4" : "#48304D",
           },
         }}
       >
         <Suspense fallback={<LoadingPage />}>
-          <RouterProvider router={router} />
+          <UserProvider>
+            <AuthProvider>
+              <RouterProvider router={router} />
+            </AuthProvider>
+          </UserProvider>
         </Suspense>
       </ConfigProvider>
     </QueryClientProvider>

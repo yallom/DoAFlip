@@ -1,10 +1,25 @@
-import { Tabs } from 'expo-router';
-import { Image, StyleSheet, View } from 'react-native';
+import { Redirect, Tabs } from 'expo-router';
+import { ActivityIndicator, Image, StyleSheet, View } from 'react-native';
 
 import { HapticTab } from '@/components/tabs/haptic-tab';
 import { AppColors } from '@/constants/theme';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function TabLayout() {
+  const { isLoggedIn, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 items-center justify-center" style={{ backgroundColor: AppColors.backgroundDark }}>
+        <ActivityIndicator color={AppColors.primary} />
+      </View>
+    );
+  }
+
+  if (!isLoggedIn) {
+    return <Redirect href="/(public)" />;
+  }
+
   return (
     <Tabs
       screenOptions={{

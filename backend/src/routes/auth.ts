@@ -2,11 +2,9 @@ import { Router } from 'express';
 import authController from '../controllers/auth';
 import { authMiddleware } from '../middleware/auth';
 import { validateRequest } from '../middleware/validation';
-import { 
-  registerSchema, 
-  loginSchema, 
-  refreshTokenSchema, 
-  verifyTokenSchema 
+import {
+    registerSchema,
+    loginSchema,
 } from '../validators/auth';
 
 const router = Router();
@@ -31,13 +29,6 @@ router.post('/login', validateRequest(loginSchema), authController.login);
  * @access  Private
  */
 router.post('/logout', authMiddleware, authController.logout);
-
-/**
- * @route   POST /api/auth/refresh
- * @desc    Renovar token
- * @access  Public
- */
-router.post('/refresh', validateRequest(refreshTokenSchema), authController.refreshToken);
 
 /**
  * @route   GET /api/auth/verify

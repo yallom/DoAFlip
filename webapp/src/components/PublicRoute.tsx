@@ -7,7 +7,7 @@ interface PublicRouteProps {
 
 const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
   const location = useLocation();
-  const authToken = sessionStorage.getItem('authToken');
+  const authToken = localStorage.getItem('token');
 
   if (authToken) {
     const from = (location.state as any)?.from?.pathname || '/';

@@ -7,7 +7,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const location = useLocation();
-  const authToken = sessionStorage.getItem('authToken');
+  const authToken = localStorage.getItem('token');
 
   if (!authToken) {
     return <Navigate to="/login" state={{ from: location }} replace />;
@@ -18,13 +18,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     const now = Date.now() / 1000;
     
     if (tokenData.exp && tokenData.exp < now) {
-      sessionStorage.removeItem('authToken');
-      sessionStorage.removeItem('iduser');
+      localStorage.removeItem('token');
+      localStorage.removeItem('iduser');
       return <Navigate to="/login" state={{ from: location }} replace />;
     }
   } catch (error) {
-    sessionStorage.removeItem('authToken');
-    sessionStorage.removeItem('iduser');
+    localStorage.removeItem('token');
+    localStorage.removeItem('iduser');
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

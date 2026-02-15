@@ -1,18 +1,20 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { useRef, useState } from 'react';
-import { Image, ScrollView, TextInput as RNTextInput, TouchableOpacity, View } from 'react-native';
+import { useMemo, useRef, useState } from 'react';
+import { Alert, Image, TextInput as RNTextInput, TouchableOpacity, View, type TextInputProps as RNTextInputProps } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { PrimaryButton } from '@/components/buttons/primary-button';
-import { SecondaryButton } from '@/components/buttons/secondary-button';
 import { TextInput } from '@/components/inputs/text-input';
 import KeyboardScrollView from '@/components/scrollviews/keyboard-scroll-view';
 import { ThemedText } from '@/components/themed/themed-text';
 import { AppColors } from '@/constants/theme';
+import { useAuth } from '@/hooks/useAuth';
+import { type AuthGender, type AuthGoal } from '@/hooks/queries/auth';
 
 export default function RegisterScreen() {
+  const { register, registerLoading } = useAuth();
   const [step, setStep] = useState(1);
 
   // Step 1: Account
@@ -40,6 +42,14 @@ export default function RegisterScreen() {
   const emailRef = useRef<RNTextInput>(null);
   const passwordRef = useRef<RNTextInput>(null);
   const confirmPasswordRef = useRef<RNTextInput>(null);
+
+  const numericInputProps = useMemo<RNTextInputProps>(
+    () => ({
+      keyboardType: 'numeric',
+      returnKeyType: 'next',
+    }),
+    [],
+  );
 
   const validatePassword = (pwd: string) => {
     const hasUppercase = /[A-Z]/.test(pwd);
@@ -79,12 +89,49 @@ export default function RegisterScreen() {
     setIsAddingOther(false);
   };
 
+  const handleRegister = async () => {
+    // Basic validation
+    if (!name || !email || !password || !age || !height || !weight || !gender || !objective) {
+      Alert.alert('Preenche os dados', 'Todos os campos sao obrigatorios.');
+      return;
+    }
+
+    const ageValue = Number(age);
+    const heightValue = Number(height);
+    const weightValue = Number(weight);
+
+    if (Number.isNaN(ageValue) || Number.isNaN(heightValue) || Number.isNaN(weightValue)) {
+      Alert.alert('Dados invalidos', 'Idade, altura e peso devem ser numeros.');
+      return;
+    }
+
+    const mappedGender: AuthGender = gender === 'Female' ? 'Feminine' : 'Masculine';
+
+    let mappedGoal: AuthGoal = 'maintenance';
+    if (objective === 'weight-loss') mappedGoal = 'weight_loss';
+    else if (objective === 'muscle-gain') mappedGoal = 'muscle_gain';
+
+    const success = await register({
+      name: name.trim(),
+      email: email.trim(),
+      password,
+      age: ageValue,
+      height: heightValue,
+      weight: weightValue,
+      gender: mappedGender,
+      goal: mappedGoal,
+    });
+
+    if (success) {
+      router.replace('/(tabs)');
+    }
+  };
+
   const handleNext = () => {
     if (step < 3) {
       setStep(step + 1);
     } else {
-      // Submit registration
-      router.push('/(tabs)');
+      handleRegister();
     }
   };
 
@@ -273,6 +320,7 @@ export default function RegisterScreen() {
                       keyboardType="numeric"
                       value={age}
                       onChangeText={setAge}
+                      {...numericInputProps}
                     />
                   </View>
 
@@ -316,6 +364,7 @@ export default function RegisterScreen() {
                       keyboardType="numeric"
                       value={height}
                       onChangeText={setHeight}
+                      {...numericInputProps}
                     />
                   </View>
 
@@ -329,6 +378,7 @@ export default function RegisterScreen() {
                         keyboardType="numeric"
                         value={weight}
                         onChangeText={setWeight}
+                        {...numericInputProps}
                       />
                       <TouchableOpacity
                         onPress={() => setWeightUnit(weightUnit === 'kg' ? 'lb' : 'kg')}
@@ -374,8 +424,8 @@ export default function RegisterScreen() {
                     )}
 
                     {isAddingOther ? (
-                      <View className="px-4 py-2 rounded-full" style={{ 
-                        borderWidth: 1, 
+                      <View className="px-4 py-2 rounded-full" style={{
+                        borderWidth: 1,
                         borderColor: AppColors.primary + '80',
                         backgroundColor: AppColors.backgroundLight
                       }}>
@@ -387,7 +437,7 @@ export default function RegisterScreen() {
                           autoFocus
                           placeholder="Enter allergy..."
                           placeholderTextColor={AppColors.textMuted}
-                          style={{ 
+                          style={{
                             fontSize: 14,
                             color: '#1E352F',
                             minWidth: 120,
@@ -509,7 +559,8 @@ export default function RegisterScreen() {
             <PrimaryButton
               title={step === 3 ? 'Complete Registration' : 'Continue'}
               onPress={handleNext}
-              disabled={step === 1 && !isStep1Valid}
+              disabled={(step === 1 && !isStep1Valid) || registerLoading}
+              loading={registerLoading && step === 3}
             />
           </View>
 

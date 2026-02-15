@@ -2,8 +2,8 @@ import { Router } from 'express';
 import userController from '../controllers/users';
 import { authMiddleware } from '../middleware/auth';
 import { validateRequest } from '../middleware/validation';
-import { 
-  updateUserSchema, 
+import {
+  updateUserSchema,
   updatePasswordSchema
 } from '../validators/users';
 
@@ -17,7 +17,7 @@ router.use(authMiddleware);
  * @desc    Obter dados do utilizador autenticado
  * @access  Private
  */
-router.get('/me', userController.getMe);
+router.get('/me', authMiddleware, userController.getMe);
 
 /**
  * @route   GET /api/users

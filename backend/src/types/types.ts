@@ -1,5 +1,3 @@
-import { en } from "zod/locales";
-
 enum Gender {
   MASCULINE = 'Masculine',
   FEMININE = 'Feminine'
@@ -40,7 +38,7 @@ interface User {
   email: string;
   hashPassword: string;
   name: string;
-  birthDate: Date;
+  age: number;
   height: number;
   weight: number;
   gender: Gender;
