@@ -146,7 +146,7 @@ const RecipeBuilderPage = () => {
                                                 <X className="w-3 h-3 text-white" />
                                             </button>
                                             <div className="text-center">
-                                                <p className="text-xs font-semibold text-dark-green-2">
+                                                <p className="text-xs font-semibold text-dark-green-2 line-clamp-3">
                                                     {placed.servings}x {ingredient.name}
                                                 </p>
                                             </div>
