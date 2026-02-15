@@ -1,10 +1,9 @@
 import os
 import pandas as pd
-from llama_index.core import VectorStoreIndex, Document, Settings, StorageContext, PromptTemplate
+from llama_index.core import VectorStoreIndex, Document, Settings
 from llama_index.llms.ollama import Ollama
 from llama_index.embeddings.ollama import OllamaEmbedding
-from llama_index.vector_stores.faiss import FaissVectorStore
-import faiss
+import pickle
 
 Settings.llm = Ollama(
     model="qwen2.5:7b-instruct-q5_k_m",
@@ -56,46 +55,40 @@ def csv_row_to_document(row: pd.Series, source_file: str) -> Document:
         excluded_llm_metadata_keys=["source_file"],
     )
 
+print("A carregar ficheiros CSV...")
 documents = []
 for csv_path in CSV_FILES:
     if not os.path.exists(csv_path):
-        print(f"Não encontrado: {csv_path}")
+        print(f"⚠️  Não encontrado: {csv_path}")
         continue
     try:
         df = pd.read_csv(csv_path, encoding='utf-8', encoding_errors='replace')
-        print(f"→ {csv_path}: {len(df)} linhas carregadas")
+        print(f"✓ {csv_path}: {len(df)} linhas carregadas")
         for _, row in df.iterrows():
             documents.append(csv_row_to_document(row, csv_path))
     except Exception as e:
         print(f"Erro ao processar {csv_path}: {e}")
 
-
 if not documents:
     print("Nenhum documento foi carregado. Verifica os caminhos dos ficheiros.")
     exit(1)
 
-test_emb = Settings.embed_model.get_text_embedding("teste rápido")
-dimension = len(test_emb)
-print(f"Dimensão do embedding: {dimension}")
+print(f"\nA construir índice com {len(documents)} documentos...")
+print("Isto pode demorar alguns minutos (a gerar embeddings)...\n")
 
-faiss_index = faiss.IndexFlatL2(dimension)
-vector_store = FaissVectorStore(faiss_index=faiss_index)
-storage_context = StorageContext.from_defaults(vector_store=vector_store)
-
-print("A construir o índice... (pode demorar alguns minutos)")
+# Cria o índice (calcula embeddings)
 index = VectorStoreIndex.from_documents(
     documents,
-    storage_context=storage_context,
     show_progress=True
 )
 
-faiss.write_index(faiss_index, "nutrition_faiss.index")
-print("FAISS guardado em: nutrition_faiss.index")
+print("\nA guardar o índice completo (já construído)...")
 
-import pickle
-doc_list = [(doc.text, doc.metadata) for doc in documents]
-with open("nutrition_docs.pkl", "wb") as f:
-    pickle.dump(doc_list, f)
-print("Documentos guardados em: nutrition_docs.pkl")
+# Guarda o índice INTEIRO (não precisa reconstruir no query!)
+with open("nutrition_index_complete.pkl", "wb") as f:
+    pickle.dump(index, f)
 
-print("\nBuild concluído!")
+print(f"✓ Índice completo guardado em: nutrition_index_complete.pkl")
+print(f"Tamanho do ficheiro: {os.path.getsize('nutrition_index_complete.pkl') / 1024 / 1024:.2f} MB")
+print("\nBuild concluído com sucesso!")
+print("Agora podes executar: python query_nutrition.py")

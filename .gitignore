@@ -1,2 +1,3 @@
 bot/data/*
 !bot/data/.gitkeep
+bot/nutrition_index_complete.pkl
