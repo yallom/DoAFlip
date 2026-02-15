@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, Send, Bot, User as UserIcon } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, Send, Bot, User as UserIcon, Loader2 } from 'lucide-react';
 
 interface Message {
   id: number;
@@ -17,45 +17,71 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: "Hello! I'm NutriAI Bot. How can I help you with your nutrition today?",
-      sender: 'bot',
-      timestamp: new Date(),
-    },
-    {
-      id: 2,
-      text: "Hi! I'd like to know more about healthy breakfast options.",
-      sender: 'user',
-      timestamp: new Date(),
-    },
-    {
-      id: 3,
-      text: "Great question! For a healthy breakfast, I recommend options rich in protein and fiber. Some excellent choices include oatmeal with fruits and nuts, Greek yogurt with berries, or whole grain toast with avocado and eggs.",
+      text: "Olá! Sou o NutriAI Bot. Como posso ajudar com a tua nutrição hoje?",
       sender: 'bot',
       timestamp: new Date(),
     },
   ]);
   const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSend = () => {
-    if (inputValue.trim()) {
-      const newMessage: Message = {
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSend = async () => {
+    if (inputValue.trim() && !isLoading) {
+      const userMessage: Message = {
         id: messages.length + 1,
         text: inputValue,
         sender: 'user',
         timestamp: new Date(),
       };
-      setMessages([...messages, newMessage]);
-      setInputValue('');
       
-      setTimeout(() => {
+      setMessages(prev => [...prev, userMessage]);
+      setInputValue('');
+      setIsLoading(true);
+
+      try {
+        const response = await fetch('http://localhost:5000/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: inputValue }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Erro ao comunicar com o servidor');
+        }
+
+        const data = await response.json();
+        
         const botResponse: Message = {
           id: messages.length + 2,
-          text: "Thank you for your message! I'm here to help with any nutrition questions you have.",
+          text: data.response || 'Desculpa, não consegui processar a tua pergunta.',
           sender: 'bot',
           timestamp: new Date(),
         };
+        
         setMessages(prev => [...prev, botResponse]);
-      }, 1000);
+      } catch (error) {
+        console.error('Erro:', error);
+        const errorMessage: Message = {
+          id: messages.length + 2,
+          text: 'Desculpa, ocorreu um erro. Verifica se o servidor está a correr.',
+          sender: 'bot',
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, errorMessage]);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -103,7 +129,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
               }`}
             >
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                   message.sender === 'bot'
                     ? 'bg-primary-green/20 border border-primary-green'
                     : 'bg-dark-green-1/20 border border-dark-green-1'
@@ -122,7 +148,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
                     : 'bg-primary-green text-white'
                 }`}
               >
-                <p className="text-sm leading-relaxed">{message.text}</p>
+                <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.text}</p>
                 <span
                   className={`text-[10px] mt-1 block ${
                     message.sender === 'bot' ? 'text-dark-green-1/60' : 'text-white/70'
@@ -136,6 +162,19 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
           ))}
+          
+          {isLoading && (
+            <div className="flex gap-2">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-primary-green/20 border border-primary-green">
+                <Bot className="w-4 h-4 text-primary-green" />
+              </div>
+              <div className="bg-white border border-primary-green/20 rounded-2xl px-4 py-3">
+                <Loader2 className="w-4 h-4 text-primary-green animate-spin" />
+              </div>
+            </div>
+          )}
+          
+          <div ref={messagesEndRef} />
         </div>
 
         <div className="p-4 bg-white border-t border-primary-green/10">
@@ -145,19 +184,24 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder="Type your message..."
-              className="flex-1 px-4 py-3 bg-gray-50 border border-primary-green/20 rounded-xl text-dark-green-2 placeholder:text-dark-green-1/40 focus:outline-none focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 transition-all text-sm"
+              placeholder="Escreve a tua mensagem..."
+              disabled={isLoading}
+              className="flex-1 px-4 py-3 bg-gray-50 border border-primary-green/20 rounded-xl text-dark-green-2 placeholder:text-dark-green-1/40 focus:outline-none focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 transition-all text-sm disabled:opacity-50"
             />
             <button
               onClick={handleSend}
-              disabled={!inputValue.trim()}
+              disabled={!inputValue.trim() || isLoading}
               className={`px-4 py-3 rounded-xl transition-all ${
-                inputValue.trim()
+                inputValue.trim() && !isLoading
                   ? 'bg-primary-green hover:bg-dark-green-1 text-white'
                   : 'bg-dark-green-1/20 text-dark-green-1/40 cursor-not-allowed'
               }`}
             >
-              <Send size={18} />
+              {isLoading ? (
+                <Loader2 size={18} className="animate-spin" />
+              ) : (
+                <Send size={18} />
+              )}
             </button>
           </div>
         </div>
