@@ -1,45 +1,19 @@
-import { z } from 'zod';
-import { MealType } from '../types/types';
-
+import z from 'zod';
 
 export const createMealSchema = z.object({
   body: z.object({
-    mealPlan_id: z.string().uuid('ID do plano alimentar deve ser um UUID válido'),
-    
-    type: z.enum(MealType, {
-      message: 'Tipo deve ser: pequeno_almoco, almoco, jantar, lanche'
-    }),
-    
-    date: z.string().datetime('Data deve estar no formato ISO 8601'),
-    
-    total_calories: z
-      .number({
-        message: 'Total de calorias deve ser um número',
-      })
-      .min(0, 'Calorias mínimas: 0')
-      .max(10000, 'Calorias máximas: 10000'),
-  }),
+    mealPlan_id: z.string().uuid(),
+    type: z.enum(['breakfast', 'lunch', 'dinner', 'snack']),
+    date: z.coerce.date(),
+    total_calories: z.coerce.number().min(0).optional()
+  })
 });
 
 export const updateMealSchema = z.object({
-  params: z.object({
-    id: z.string().uuid('ID deve ser um UUID válido'),
-  }),
   body: z.object({
-    mealPlan_id: z.string().uuid('ID do plano alimentar deve ser um UUID válido').optional(),
-    
-    type: z.enum(MealType, {
-      message: 'Tipo deve ser: pequeno_almoco, almoco, jantar, lanche'
-    }).optional(),
-    
-    date: z.string().datetime('Data deve estar no formato ISO 8601').optional(),
-    
-    total_calories: z
-      .number({
-        message: 'Total de calorias deve ser um número',
-      })
-      .min(0, 'Calorias mínimas: 0')
-      .max(10000, 'Calorias máximas: 10000')
-      .optional(),
-  }).optional(),
+    mealPlan_id: z.string().uuid().optional(),
+    type: z.enum(['breakfast', 'lunch', 'dinner', 'snack']).optional(),
+    date: z.coerce.date().optional(),
+    total_calories: z.coerce.number().min(0).optional()
+  })
 });

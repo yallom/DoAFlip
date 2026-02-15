@@ -1,7 +1,7 @@
 import { type Request, type Response } from 'express';
 import mealModel, { type CreateMealDTO, type UpdateMealDTO } from '../models/meals';
 
-class FoodController {
+class MealController {
   // GET /meals - Listar todos os refeições
   async getAll(req: Request, res: Response) {
     try {
@@ -43,6 +43,60 @@ class FoodController {
       return res.status(500).json({
         success: false,
         message: 'Erro ao buscar refeição',
+      });
+    }
+  }
+
+  // GET /meals/mealplan/:mealPlanId - Buscar refeições por Meal Plan ID
+  async getByMealPlanId(req: Request, res: Response) {
+    try {
+      const { mealPlanId } = req.params as { mealPlanId: string };
+      
+      const meals = await mealModel.findByMealPlanId(mealPlanId);
+      
+      if (meals.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: 'Nenhuma refeição encontrada para este plano alimentar',
+        });
+      }
+      
+      return res.status(200).json({
+        success: true,
+        data: meals,
+      });
+    } catch (error) {
+      console.error('Erro ao buscar refeições por plano alimentar:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Erro ao buscar refeições',
+      });
+    }
+  }
+
+  // GET /meals/type/:type - Buscar refeições por tipo
+  async getByType(req: Request, res: Response) {
+    try {
+      const { type } = req.params as { type: string };
+      
+      const meals = await mealModel.findByType(type as any);
+      
+      if (meals.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: 'Nenhuma refeição encontrada deste tipo',
+        });
+      }
+      
+      return res.status(200).json({
+        success: true,
+        data: meals,
+      });
+    } catch (error) {
+      console.error('Erro ao buscar refeições por tipo:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Erro ao buscar refeições',
       });
     }
   }
@@ -159,4 +213,4 @@ class FoodController {
   }
 }
 
-export default new FoodController();
+export default new MealController();

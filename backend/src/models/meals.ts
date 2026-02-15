@@ -2,70 +2,107 @@ import { prisma } from '../index';
 import type { MealType } from '../types/types';
 
 export interface CreateMealDTO {
-  mealPlan_id: string,
-  type: MealType,
-  date: Date,
-  total_calories: number,
+  mealPlan_id: string;
+  type: MealType;
+  date: Date;
+  total_calories?: number;
 }
 
 export interface UpdateMealDTO {
-  mealPlan_id: string,
-  type: MealType,
-  date: Date,
-  total_calories: number,
+  mealPlan_id?: string;
+  type?: MealType;
+  date?: Date;
+  total_calories?: number;
 }
 
 export interface MealResponse {
-  id: string,
-  mealPlan_id: string,
-  type: MealType,
-  date: Date,
-  total_calories: number,
-  created_at: Date
+  id: string;
+  mealPlan_id: string;
+  type: MealType;
+  date: Date;
+  total_calories: number;
+  created_at: Date;
 }
 
 class MealModel {
+  // Criar nova refeição
   async create(data: CreateMealDTO): Promise<MealResponse> {
-    return await prisma.meal.create({
+    const meal = await prisma.meal.create({
       data,
+      include: {
+        recipes: true,
+        meal_plan: true
+      }
     });
+    return meal as MealResponse;
   }
 
+  // Buscar refeição por ID
   async findById(id: string): Promise<MealResponse | null> {
-    return await prisma.meal.findUnique({
+    const meal = await prisma.meal.findUnique({
       where: { id },
+      include: {
+        recipes: true,
+        meal_plan: true
+      }
     });
+    return meal as MealResponse | null;
   }
 
-  async findByName(name: string): Promise<MealResponse | null> {
-    return await prisma.meal.findFirst({
-      where: { normalized_name: name.toLowerCase() },
+  // Buscar refeições por Meal Plan ID
+  async findByMealPlanId(mealPlanId: string): Promise<MealResponse[]> {
+    const meals = await prisma.meal.findMany({
+      where: { mealPlan_id: mealPlanId },
+      include: {
+        recipes: true
+      },
+      orderBy: { date: 'asc' }
     });
+    return meals as MealResponse[];
   }
 
-  async findAll(): Promise<MealResponse[]> {
-    return await prisma.meal.findMany({
-      orderBy: { name: 'asc' },
-    });
-  }
-
+  // Buscar refeições por tipo
   async findByType(type: MealType): Promise<MealResponse[]> {
-    return await prisma.meal.findMany({
-      where: { type: type },
-      orderBy: { name: 'asc' },
+    const meals = await prisma.meal.findMany({
+      where: { type: type as any },
+      include: {
+        recipes: true,
+        meal_plan: true
+      },
+      orderBy: { date: 'asc' }
     });
+    return meals as MealResponse[];
   }
 
+  // Listar todas as refeições
+  async findAll(): Promise<MealResponse[]> {
+    const meals = await prisma.meal.findMany({
+      include: {
+        recipes: true,
+        meal_plan: true
+      },
+      orderBy: { date: 'desc' }
+    });
+    return meals as MealResponse[];
+  }
+
+  // Atualizar refeição
   async update(id: string, data: UpdateMealDTO): Promise<MealResponse> {
-    return await prisma.meal.update({
+    const meal = await prisma.meal.update({
       where: { id },
       data,
+      include: {
+        recipes: true,
+        meal_plan: true
+      }
     });
+    return meal as MealResponse;
   }
 
+  // Apagar refeição
   async delete(id: string): Promise<void> {
     await prisma.meal.delete({
-      where: { id },
+      where: { id }
     });
   }
 }
