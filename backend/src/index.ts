@@ -2,7 +2,9 @@ import express from 'express';
 import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
 import mealPlanRoutes from './routes/mealPlan';
+import foodRoutes from './routes/foods';
 import { PrismaClient } from '@prisma/client';
+import cors from 'cors'
 
 export const prisma = new PrismaClient();
 
@@ -10,6 +12,10 @@ const app = express();
 
 app.use(express.json());     // Parser JSON
 app.use(express.urlencoded({ extended: true })); // Parser URL
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials:false
+}))
 
 
 app.get('/', (req, res) => {
@@ -19,6 +25,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/mealplan', mealPlanRoutes);
+app.use('/api/foods', foodRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

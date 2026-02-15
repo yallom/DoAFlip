@@ -10,26 +10,22 @@ import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import '@/global.css';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-export const unstable_settings = {
-    anchor: 'login',
-};
-
 export default function RootLayout() {
-    const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme();
 
-    return (
-        <GluestackUIProvider mode="dark">
-            <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                <SafeAreaProvider>
-                    <KeyboardProvider>
-                        <Stack>
-                            <Stack.Screen name="login" options={{ headerShown: false }} />
-                            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                        </Stack>
-                        <StatusBar style="auto" />
-                    </KeyboardProvider>
-                </SafeAreaProvider>
-            </ThemeProvider>
-        </GluestackUIProvider>
-    );
+  return (
+    <GluestackUIProvider mode="dark">
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <SafeAreaProvider>
+          <KeyboardProvider>
+            <Stack>
+              <Stack.Screen name="(public)" options={{ headerShown: false }} />
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            </Stack>
+            <StatusBar style="auto" />
+          </KeyboardProvider>
+        </SafeAreaProvider>
+      </ThemeProvider>
+    </GluestackUIProvider>
+  );
 }
