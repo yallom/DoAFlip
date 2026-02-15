@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Genero, Objetivo } from '../types/types';
+import { Gender, Goal } from '../types/types';
 
 class AuthValidator {
   // Schema para registro de novo utilizador
@@ -11,8 +11,8 @@ readonly registerSchema = z.object({
   data_nascimento: z.string().transform(date => new Date(date)),
   altura_cm: z.number().int().min(100).max(250),
   peso_kg: z.number().min(30).max(300),
-  genero: z.nativeEnum(Genero),
-  objetivo: z.nativeEnum(Objetivo),
+  genero: z.nativeEnum(Gender),
+  objetivo: z.nativeEnum(Goal),
 });
 
   // Schema para login
