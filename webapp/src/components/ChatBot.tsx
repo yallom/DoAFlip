@@ -12,6 +12,7 @@ interface ChatBotProps {
   isOpen: boolean;
   onClose: () => void;
 }
+const API_URL = "http://localhost:8000/chat";
 
 const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
@@ -36,26 +37,37 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
   ]);
   const [inputValue, setInputValue] = useState('');
 
-  const handleSend = () => {
-    if (inputValue.trim()) {
-      const newMessage: Message = {
-        id: messages.length + 1,
-        text: inputValue,
-        sender: 'user',
+  const handleSend = async () => {
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ mensagem: inputValue.trim() }),
+      });
+    
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+    
+      const data = await response.json();
+      
+      // data.resposta → a resposta do bot
+      // data.erro → se houver erro
+    
+      const botMessage: Message = {
+        id: messages.length + 2,
+        text: data.resposta || "Desculpa, não consegui responder agora...",
+        sender: 'bot',
         timestamp: new Date(),
       };
-      setMessages([...messages, newMessage]);
-      setInputValue('');
-      
-      setTimeout(() => {
-        const botResponse: Message = {
-          id: messages.length + 2,
-          text: "Thank you for your message! I'm here to help with any nutrition questions you have.",
-          sender: 'bot',
-          timestamp: new Date(),
-        };
-        setMessages(prev => [...prev, botResponse]);
-      }, 1000);
+    
+      setMessages(prev => [...prev, botMessage]);
+    
+    } catch (err) {
+      console.error("Erro ao chamar API:", err);
+      // adiciona mensagem de erro no chat
     }
   };
 
@@ -75,7 +87,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
         onClick={onClose}
       />
       
-      <div className="fixed bottom-6 right-6 z-50 w-100 h-150 bg-white rounded-2xl shadow-2xl shadow-primary-green/20 flex flex-col overflow-hidden border border-primary-green/20">
+      <div className="fixed bottom-6 right-6 z-50 w-200 h-200 bg-white rounded-2xl shadow-2xl shadow-primary-green/20 flex flex-col overflow-hidden border border-primary-green/20">
         <div className="bg-primary-green px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
