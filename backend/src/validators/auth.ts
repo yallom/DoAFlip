@@ -7,12 +7,12 @@ class AuthValidator {
 readonly registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
-  nome: z.string().min(2).max(100),
-  data_nascimento: z.string().transform(date => new Date(date)),
-  altura_cm: z.number().int().min(100).max(250),
-  peso_kg: z.number().min(30).max(300),
-  genero: z.nativeEnum(Gender),
-  objetivo: z.nativeEnum(Goal),
+  name: z.string().min(2).max(100),
+  birthDate: z.string().transform(date => new Date(date)),
+  height: z.number().int().min(100).max(250),
+  weight: z.number().min(30).max(300),
+  gender: z.nativeEnum(Gender),
+  goal: z.nativeEnum(Goal),
 });
 
   // Schema para login
