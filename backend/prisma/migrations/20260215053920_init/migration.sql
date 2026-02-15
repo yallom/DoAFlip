@@ -2,13 +2,16 @@
 CREATE TYPE "Gender" AS ENUM ('Masculine', 'Feminine');
 
 -- CreateEnum
+CREATE TYPE "Allergies" AS ENUM ('peanuts', 'lactose', 'soy', 'seafood');
+
+-- CreateEnum
 CREATE TYPE "Goal" AS ENUM ('weight_loss', 'muscle_gain', 'maintenance');
 
 -- CreateEnum
 CREATE TYPE "MealType" AS ENUM ('breakfast', 'lunch', 'dinner', 'snack');
 
 -- CreateEnum
-CREATE TYPE "FoodCategory" AS ENUM ('protein', 'carbohidrate', 'vegetable', 'fruit', 'fat', 'dairy');
+CREATE TYPE "FoodCategory" AS ENUM ('protein', 'carbohidrate', 'vegetable', 'fruit', 'fat', 'dairy', 'grains');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -16,10 +19,11 @@ CREATE TABLE "users" (
     "email" TEXT NOT NULL,
     "hashPassword" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "birthDate" TIMESTAMP(3) NOT NULL,
+    "age" INTEGER NOT NULL,
     "height" INTEGER NOT NULL,
     "weight" DOUBLE PRECISION NOT NULL,
     "gender" "Gender" NOT NULL,
+    "alergies" "Allergies"[],
     "goal" "Goal" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -58,6 +62,18 @@ CREATE TABLE "foods" (
     "name" TEXT NOT NULL,
     "normalized_name" TEXT NOT NULL,
     "category" "FoodCategory" NOT NULL,
+    "vit_c" DOUBLE PRECISION NOT NULL,
+    "vit_b11" DOUBLE PRECISION NOT NULL,
+    "sodium" DOUBLE PRECISION NOT NULL,
+    "calcium" DOUBLE PRECISION NOT NULL,
+    "iron" DOUBLE PRECISION NOT NULL,
+    "carbs" DOUBLE PRECISION NOT NULL,
+    "fat" DOUBLE PRECISION NOT NULL,
+    "fiber" DOUBLE PRECISION NOT NULL,
+    "protein" DOUBLE PRECISION NOT NULL,
+    "sugar" DOUBLE PRECISION NOT NULL,
+    "calories" DOUBLE PRECISION NOT NULL,
+    "health_score" DOUBLE PRECISION NOT NULL,
 
     CONSTRAINT "foods_pkey" PRIMARY KEY ("id")
 );
