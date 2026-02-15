@@ -1,5 +1,6 @@
 import { Flame, Drumstick, Wheat, Droplets, Search, X } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import axios from "axios";
 
 interface PlacedIngredient {
     id: string;
@@ -8,37 +9,56 @@ interface PlacedIngredient {
     servings: number;
 }
 
-const placeholderIngredientImage = "https://placehold.co/120x120/13EC5B/1E352F?text=Item";
+interface ingredient {
+    id: string;
+    name: string;
+    imageUrl: string;
+    nutrition: {
+        calories: number;
+        protein: number;
+        carbs: number;
+        fat: number;
+    }
+}
 
-const allIngredients = [
-    { id: "1", name: "Avocado", imageUrl: placeholderIngredientImage, nutrition: { calories: 160, protein: 2, carbs: 9, fat: 15 } },
-    { id: "2", name: "Eggs", imageUrl: placeholderIngredientImage, nutrition: { calories: 78, protein: 6, carbs: 0, fat: 6 } },
-    { id: "3", name: "Sourdough", imageUrl: placeholderIngredientImage, nutrition: { calories: 264, protein: 9, carbs: 49, fat: 1 } },
-    { id: "4", name: "Olive Oil", imageUrl: placeholderIngredientImage, nutrition: { calories: 119, protein: 0, carbs: 0, fat: 14 } },
-    { id: "5", name: "Chicken Breast", imageUrl: placeholderIngredientImage, nutrition: { calories: 165, protein: 31, carbs: 0, fat: 4 } },
-    { id: "6", name: "Brown Rice", imageUrl: placeholderIngredientImage, nutrition: { calories: 215, protein: 5, carbs: 45, fat: 2 } },
-    { id: "7", name: "Broccoli", imageUrl: placeholderIngredientImage, nutrition: { calories: 55, protein: 4, carbs: 11, fat: 1 } },
-    { id: "8", name: "Salmon", imageUrl: placeholderIngredientImage, nutrition: { calories: 280, protein: 25, carbs: 0, fat: 20 } },
-    { id: "9", name: "Spinach", imageUrl: placeholderIngredientImage, nutrition: { calories: 23, protein: 3, carbs: 4, fat: 0 } },
-    { id: "10", name: "Lemon", imageUrl: placeholderIngredientImage, nutrition: { calories: 29, protein: 1, carbs: 9, fat: 0 } },
-    { id: "11", name: "Garlic", imageUrl: placeholderIngredientImage, nutrition: { calories: 149, protein: 6, carbs: 34, fat: 1 } },
-    { id: "12", name: "Tomato", imageUrl: placeholderIngredientImage, nutrition: { calories: 18, protein: 1, carbs: 4, fat: 0 } },
-    { id: "13", name: "Cucumber", imageUrl: placeholderIngredientImage, nutrition: { calories: 16, protein: 1, carbs: 4, fat: 0 } },
-    { id: "14", name: "Bell Pepper", imageUrl: placeholderIngredientImage, nutrition: { calories: 31, protein: 1, carbs: 6, fat: 0 } },
-    { id: "15", name: "Quinoa", imageUrl: placeholderIngredientImage, nutrition: { calories: 120, protein: 4, carbs: 21, fat: 2 } },
-];
+const placeholderIngredientImage = "https://placehold.co/120x120/13EC5B/1E352F?text=Item";
 
 const RecipeBuilderPage = () => {
     const [search, setSearch] = useState("");
     const [servings, setServings] = useState(1);
     const [selectedIngredients, setSelectedIngredients] = useState<PlacedIngredient[]>([]);
+    const [allIngredients, setAllIngredients] = useState<ingredient[]>([]);
+
+    
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const {data} = await axios.get('http://localhost:3000/api/foods/')
+            console.log(data)
+            const formatted = data.data.map((d) => {
+                return {
+                    id: d.id,
+                    name: d.name,
+                    imageUrl: placeholderIngredientImage,
+                    nutrition: {
+                        calories: d.calories,
+                        protein: d.protein,
+                        carbs: d.carbs,
+                        fat: d.fat
+                    }
+                }
+            })
+            setAllIngredients(formatted)
+        }
+        fetchData()
+    }, [])
 
     const filteredIngredients = useMemo(() => {
         const normalizedSearch = search.trim().toLowerCase();
         return allIngredients.filter((ingredient) =>
             ingredient.name.toLowerCase().includes(normalizedSearch)
         );
-    }, [search]);
+    }, [search, allIngredients]);
 
     const totals = useMemo(() => {
         return selectedIngredients.reduce(
@@ -54,7 +74,7 @@ const RecipeBuilderPage = () => {
             },
             { calories: 0, protein: 0, carbs: 0, fat: 0 }
         );
-    }, [selectedIngredients]);
+    }, [selectedIngredients, allIngredients]);
 
     const handleDragStart = (e: React.DragEvent, ingredientId: string) => {
         e.dataTransfer.effectAllowed = "copy";
