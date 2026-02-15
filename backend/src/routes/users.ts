@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import userController from '../controllers/users';
-//import { authMiddleware } from '../middleware/auth';
+import { authMiddleware } from '../middleware/auth';
 import { validateRequest } from '../middleware/validation';
 import { 
   updateUserSchema, 
@@ -10,7 +10,7 @@ import {
 const router = Router();
 
 // Todas as rotas de users requerem autenticação
-//router.use(authMiddleware);
+router.use(authMiddleware);
 
 /**
  * @route   GET /api/users/me

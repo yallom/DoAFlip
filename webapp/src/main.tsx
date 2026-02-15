@@ -11,12 +11,13 @@ const queryClient = new QueryClient();
 
 const App = lazy(() => import('@/App'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
-const ChatPage = lazy(() => import('@/pages/ChatPage'))
 
 const ProtectedRoute = lazy(() => import('@/components/ProtectedRoute'))
 const PublicRoute = lazy(() => import('@/components/PublicRoute'))
 
 const NavBar = lazy(() => import('@/components/NavBar'))
+const RecipesPage = lazy(() => import('@/pages/RecipesPage'))
+const RecipeDetailPage = lazy(() => import('@/pages/RecipeDetailPage'))
 const PlanPage = lazy(() => import('@/pages/PlanPage'))
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
 const RegisterPage = lazy(() => import('@/pages/RegisterPage'))
@@ -33,14 +34,26 @@ export const router = createBrowserRouter([
       children: [
         {
             path: '/',
-            element: <Navigate to="/chat" replace />
-        },                
+            element: <Navigate to="/login" replace />
+        },
         {
-          //element: <NavBar/>,
+          path: 'login',
+          element: <LoginPage/>,
+        },
+        {
+          path: 'register',
+          element: <RegisterPage/>,
+        },
+        {
+          element: <NavBar/>,
           children: [
             {
-              path: 'chat',
-              element: <ChatPage/>,
+              path: 'recipes',
+              element: <RecipesPage/>,
+            },
+            {
+              path: 'recipes/:id',
+              element: <RecipeDetailPage/>,
             },
             {
               path: 'profile',
@@ -54,16 +67,7 @@ export const router = createBrowserRouter([
               path: 'settings',
               element: <SettingsPage/>,
             },
-            {
-              path: 'login',
-              element: <LoginPage/>,
-            },
-            {
-              path: 'register',
-              element: <RegisterPage/>,
-            },
           ],
-          
         },
       ],
     },
