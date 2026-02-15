@@ -21,6 +21,13 @@ enum FoodCategory {
   GRAINS = 'grains',
 }
 
+enum MealType {
+  BREAKFAST = 'breakfast',
+  LUNCH = 'lunch',
+  DINNER = 'dinner',
+  SNACK = 'snack'
+}
+
 enum Allergie {
   PEANUTS = 'peanuts',
   LACTOSE = 'lactose',
@@ -72,6 +79,15 @@ interface MealPlan {
   notes: string;
 }
 
+interface Meal {
+  id: string,
+  mealPlan_id: string,
+  type: MealType,
+  date: Date,
+  total_calories: number,
+  created_at: Date
+}
+
 interface Recipe {
   id: string;
   name: string;
@@ -82,5 +98,5 @@ interface Recipe {
   meal_id: string;
 }
 
-export { Gender, Goal, FoodCategory, Allergie };
-export type { User, MealPlan, Food, Recipe };
+export { Gender, Goal, FoodCategory, MealType, Allergie };
+export type { User, MealPlan, Food, Meal, Recipe };

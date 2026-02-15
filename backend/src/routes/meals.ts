@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import foodController from '../controllers/foods';
+import mealController from '../controllers/meals';
 //import { authMiddleware } from '../middleware/auth';
 import { validateRequest } from '../middleware/validation';
-import { createFoodSchema, updateFoodSchema } from '../validators/foods';
+import { updateMealSchema } from '../validators/meals';
+import { createMealSchema } from '../validators/meals';
 
 const router = Router();
 
@@ -14,34 +15,34 @@ const router = Router();
  * @desc    Listar todos os utilizadores
  * @access  Private (Admin apenas - adicionar middleware de autorização se necessário)
  */
-router.get('/', foodController.getAll);
+router.get('/', mealController.getAll);
 
 /**
  * @route   GET /api/foods/:id
  * @desc    Obter utilizador por ID
  * @access  Private
  */
-router.get('/:id', foodController.getById);
+router.get('/:id', mealController.getById);
 
 /**
- * @route   POST /api/foods
- * @desc    Atualizar dados do utilizador
+ * @route   POST /api/meals
+ * @desc    Craiar novo plano alimentar
  * @access  Private
  */
-router.put('/:id', validateRequest(createFoodSchema), foodController.update);
+router.post('/', validateRequest(createMealSchema), mealController.create);
 
 /**
  * @route   PUT /api/foods/:id
  * @desc    Atualizar dados do utilizador
  * @access  Private
  */
-router.put('/:id', validateRequest(updateFoodSchema), foodController.update);
+router.put('/:id', validateRequest(updateMealSchema), mealController.update);
 
 /**
  * @route   DELETE /api/foods/:id
  * @desc    Eliminar utilizador
  * @access  Private
  */
-router.delete('/:id', foodController.delete);
+router.delete('/:id', mealController.delete);
 
 export default router;
